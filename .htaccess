@@ -1,0 +1,6 @@
+Options FollowSymLinks
+RewriteEngine On
+RewriteBase "/hbm/"
+
+# Redirect all user-initiated requests to index.html
+RewriteRule "^[^.]*$" "dist/html/index.html" [END]
