@@ -1,7 +1,7 @@
-import Command from './command';
-import ExecutorNotFoundException from './executor_not_found_exception';
-import ExecutorStorage from './executor_storage';
-import RequestExecutor from './request_executor';
+import Command from './Command';
+import ExecutorNotFoundException from './ExecutorNotFoundException';
+import ExecutorStorage from './ExecutorStorage';
+import RequestExecutor from './RequestExecutor';
 
 export default class RequestDispatcher {
     protected Executors: ExecutorStorage | undefined;
@@ -21,6 +21,10 @@ export default class RequestDispatcher {
         }
     }
 
+    /**
+     * Sets the object holding executors
+     * @param storage The storage object
+     */
     public SetExecutorStorage(storage: ExecutorStorage): void {
         this.Executors = storage;
     }
