@@ -6,5 +6,8 @@ RewriteBase "/hbm/"
 RewriteRule "^(css/.*)$" "dist/$1" [END]
 RewriteRule "^(js/.*)$" "dist/$1.js" [END]
 
+# Pass traffic to the proxy service
+RewriteRule "^proxy/(.*)$" "proxy/index.php?path=$1" [END]
+
 # Redirect all user-initiated requests to index.html
 RewriteRule "^[^.]*$" "dist/html/index.html" [END]

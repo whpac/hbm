@@ -1,2 +1,5 @@
 # Ignore distribution files
 dist
+
+# Ignore proxy to bypass the CORS
+proxy
