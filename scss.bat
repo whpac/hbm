@@ -1,0 +1,1 @@
+@sass src/scss:dist/css --style compressed --no-source-map
