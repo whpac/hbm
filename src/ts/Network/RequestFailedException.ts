@@ -1,11 +1,17 @@
-export default class RequestFailedException {
-    /** Holds the exception message */
-    public readonly Message: string;
+import BaseException from '../App/BaseException';
+
+/** Represents an exception being thrown when the network request fails */
+export default class RequestFailedException extends BaseException {
     /** Contains information about the failed request response */
     public readonly ResponseData: RequestFailedExceptionData;
 
+    /**
+     * Represents an exception being thrown when the network request fails
+     * @param message The exception message
+     * @param data The data about failed exception
+     */
     public constructor(message: string, data: RequestFailedExceptionData) {
-        this.Message = message;
+        super(message);
         this.ResponseData = data;
     }
 }

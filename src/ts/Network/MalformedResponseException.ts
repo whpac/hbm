@@ -1,11 +1,17 @@
-export default class MalformedResponseException {
-    /** Holds the exception message */
-    public readonly Message: string;
+import BaseException from '../App/BaseException';
+
+/** Represents an exception that is thrown when the network response is malformed */
+export default class MalformedResponseException extends BaseException {
     /** The response data */
     public readonly ResponseData: MalformedResponseExceptionData;
 
+    /**
+     * Represents an exception that is thrown when the network response is malformed
+     * @param message The exception message
+     * @param data Response data
+     */
     public constructor(message: string, data: MalformedResponseExceptionData) {
-        this.Message = message;
+        super(message);
         this.ResponseData = data;
     }
 }

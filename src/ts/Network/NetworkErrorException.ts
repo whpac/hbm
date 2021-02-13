@@ -1,8 +1,13 @@
-export default class NetworkErrorException {
-    /** Holds the exception message */
-    public readonly Message: string;
+import BaseException from '../App/BaseException';
 
+/** Represents an exception that is thrown as a result of a network error */
+export default class NetworkErrorException extends BaseException {
+
+    /**
+     * Represents an exception that is thrown as a result of a network error
+     * @param message The exception message
+     */
     public constructor(message: string) {
-        this.Message = message;
+        super(message);
     }
 }
