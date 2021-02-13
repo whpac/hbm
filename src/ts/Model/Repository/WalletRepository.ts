@@ -35,7 +35,7 @@ export default class WalletRepository {
             wallets.push(new Wallet(
                 BigInt(w.id),
                 w.name,
-                BigInt(w.balance),
+                BigInt(w.balance * 100),    // Balance is stored in base units
                 w.user,
                 w.transactions
             ));
