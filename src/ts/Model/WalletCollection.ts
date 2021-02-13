@@ -4,7 +4,7 @@ import Wallet from './Wallet';
 
 export default class WalletCollection {
     protected static Singleton: WalletCollection | undefined;
-    public Wallets: Map<bigint, Wallet>;
+    protected Wallets: Map<bigint, Wallet>;
 
     /**
      * Returns a collection of wallets. If they hadn't been

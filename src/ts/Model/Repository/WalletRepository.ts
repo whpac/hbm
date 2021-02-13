@@ -11,7 +11,6 @@ type ApiResponseWallet = {
     balance: number;
     id: number;
     name: string;
-    transactions: never;
     user: never;
 };
 
@@ -36,8 +35,7 @@ export default class WalletRepository {
                 BigInt(w.id),
                 w.name,
                 BigInt(w.balance * 100),    // Balance is stored in base units
-                w.user,
-                w.transactions
+                w.user
             ));
         }
 

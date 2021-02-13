@@ -1,3 +1,5 @@
+import TransactionCollection from './TransactionCollection';
+
 export default class Wallet {
     /** The wallet identifier */
     public readonly Id: bigint;
@@ -8,14 +10,16 @@ export default class Wallet {
     /** The wallet's owner */
     public Owner: never;
     /** List of transactions done over with this wallet */
-    public Transactions: never;
+    protected Transactions: TransactionCollection | undefined;
 
-    public constructor(id: bigint, name: string, balance: bigint, owner: never, transactions: never) {
+    public constructor(id: bigint, name: string, balance: bigint, owner: never) {
         this.Id = id;
         this.Name = name;
         this.Balance = balance;
         this.Owner = owner;
-        this.Transactions = transactions;
     }
 
+    public GetTransactions() {
+
+    }
 }
