@@ -9,12 +9,13 @@ export default class WalletCollection {
     /**
      * Returns a collection of wallets. If they hadn't been
      * already loaded, fetches them from the repository.
+     * 
+     * Should it be impossible to load the wallets, a RepositoryFetchException is thrown.
      */
-    public static GetCollection(): WalletCollection {
+    public static async GetCollection(): Promise<WalletCollection> {
         if(this.Singleton === undefined) {
-            this.Singleton = new WalletCollection(
-                WalletRepository.GetAllWallets()
-            );
+            let wallets = await WalletRepository.GetAllWallets();
+            this.Singleton = new WalletCollection(wallets);
         }
         return this.Singleton;
     }
@@ -29,18 +30,22 @@ export default class WalletCollection {
 
     /**
      * Returns a wallet with the specified id. If it doesn't exist,
-     * an Element Not Found Exception is thrown.
+     * an ElementNotFoundException is thrown.
      * @param id Id of the wallet to return.
      */
-    public GetWalletById(id: bigint): Wallet {
+    public async GetWalletById(id: bigint): Promise<Wallet> {
         if(this.Wallets.has(id)) {
             return this.Wallets.get(id)!;
         }
 
-        let wallet = WalletRepository.GetWalletById(id);
-        if(wallet !== undefined) {
-            this.Wallets.set(id, wallet);
-            return wallet;
+        try {
+            let wallet = await WalletRepository.GetWalletById(id);
+            if(wallet !== undefined) {
+                this.Wallets.set(id, wallet);
+                return wallet;
+            }
+        } catch(e) {
+            // It means the download has failed. Throw an ElementNotFoundException then.
         }
 
         throw new ElementNotFoundException(`Wallet with id '${id}' doesn't exist in this collection.`, id);
