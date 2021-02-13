@@ -1,0 +1,17 @@
+.wallet-list {list-style:none; margin:0; padding:0;}
+.wallet-list-item {
+    border-bottom:1px solid #ccc; display:grid; grid-template-columns:1fr auto;
+    grid-template-rows:auto auto; grid-template-areas:'name balance' 'subtitle balance';
+    align-items:center; padding:8px 8px; height:40px; gap:4px 8px; cursor:pointer;
+    transition:background 0.3s;
+
+    .name {grid-area:name; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+    .subtitle {grid-area:subtitle; color:rgba(0,0,0,0.6); font-size:0.85em;}
+    .balance {grid-area:balance; font-size:1.25em;}
+    .balance.negative {color:#b71c1c}
+
+    &:first-child {border-top:1px solid #ccc;}
+    &:hover {
+        background:#f8f8f8;
+    }
+}

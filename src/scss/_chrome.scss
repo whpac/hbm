@@ -1,0 +1,23 @@
+.page-heading {
+    background-color:#0d47a1; color:#fff; height:148px; padding:16px 28px;
+    margin-bottom:-84px;
+}
+
+.page-content {
+    margin:0 52px;
+
+    main {
+        background:#fff; box-shadow:0 0 8px rgba(0,0,0,0.5);
+        border:1px solid #ccc; padding:16px;
+        display:grid; grid-template-columns:1fr 3fr;
+        grid-template-areas:'list content';
+    }
+}
+
+.list-pane {
+    border-right:1px solid #ccc; grid-area:'list';
+    padding-right:16px;
+}
+
+.content-pane {grid-area:'content'; padding-left:16px;}
+.pane-heading {margin-top:16px; margin-left:8px}
