@@ -4,8 +4,9 @@ import WalletCollection from '../Model/WalletCollection';
 
 export default class WalletListingController implements RequestExecutor {
 
-    Execute(command: Command): void {
-        let wallets = WalletCollection.GetCollection().GetAllWallets();
+    async Execute(command: Command): Promise<void> {
+        let collection = await WalletCollection.GetCollection();
+        let wallets = collection.GetAllWallets();
         console.log(wallets);
     }
 }
