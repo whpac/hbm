@@ -60,8 +60,7 @@ export default class WalletRepository {
             BigInt(api_wallet.id),
             api_wallet.name,
             BigInt(api_wallet.balance),
-            api_wallet.user,
-            api_wallet.transactions
+            api_wallet.user
         );
 
         return wallet;
