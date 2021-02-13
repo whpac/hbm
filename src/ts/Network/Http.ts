@@ -1,14 +1,10 @@
+import HttpResponse from './HttpResponse';
 import MalformedResponseException from './MalformedResponseException';
 import NetworkErrorException from './NetworkErrorException';
 import RequestFailedException from './RequestFailedException';
 import { RequestMethod } from './RequestMethod';
 import RequestOptions from './RequestOptions';
 
-type HttpResponse = {
-    Status: number;
-    StatusText: string;
-    Response: any;
-};
 type ResolveFunction = (value: HttpResponse | PromiseLike<HttpResponse>) => void;
 type RejectFunction = (reason?: any) => void;
 
