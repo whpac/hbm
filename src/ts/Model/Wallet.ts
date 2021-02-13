@@ -19,7 +19,13 @@ export default class Wallet {
         this.Owner = owner;
     }
 
-    public GetTransactions() {
-
+    /**
+     * Returns a colletion of transactions for this wallet
+     */
+    public async GetTransactions(): Promise<TransactionCollection> {
+        if(this.Transactions === undefined) {
+            this.Transactions = await TransactionCollection.CreateForWallet(this);
+        }
+        return this.Transactions;
     }
 }
