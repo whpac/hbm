@@ -1,21 +1,21 @@
-import Wallet from '../../Model/Wallet';
-import WalletListingController from '../../WalletListing/WalletListingController';
 import Component from '../Common/Component';
 import { ComponentState } from '../Common/ComponentState';
 import Page from '../Presentation/Page';
+import WalletDto from './WalletDto';
 import WalletList from './WalletList';
 import WalletListItem from './WalletListItem';
 import WalletTransactions from './WalletTransactions';
 
-export default class WalletsPage extends Component implements Page {
+export default class WalletsPage extends Component<'WalletSelectionChanged'> implements Page {
     protected WalletListPane: WalletList;
     protected WalletTransactionsPane: WalletTransactions;
 
     public constructor() {
         super();
 
-        this.WalletListPane = new WalletList();
         this.WalletTransactionsPane = new WalletTransactions();
+        this.WalletListPane = new WalletList();
+        this.WalletListPane.AddEventListener('SelectionChanged', this.OnWalletSelectionChanged.bind(this));
     }
 
     Load(): void | Promise<void> { }
@@ -31,12 +31,21 @@ export default class WalletsPage extends Component implements Page {
         return elem;
     }
 
-    public PopulateWallets(wallets: Wallet[]) {
+    public PopulateWallets(wallets: WalletDto[]) {
         for(let wallet of wallets) {
             let new_item = new WalletListItem(wallet);
             this.WalletListPane.AddItem(new_item);
         }
 
+        this.WalletListPane.SetSelectedIndex(0);
         this.SetState(ComponentState.READY);
+    }
+
+    public GetSelectedWallet(): WalletDto | undefined {
+        return this.WalletListPane.GetSelectedItem()?.Wallet;
+    }
+
+    protected OnWalletSelectionChanged() {
+        this.FireEvent('WalletSelectionChanged');
     }
 }
