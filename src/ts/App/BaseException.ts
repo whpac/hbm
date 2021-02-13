@@ -9,5 +9,6 @@ export default class BaseException {
      */
     public constructor(message: string) {
         this.Message = message;
+        console.info(`Exception thrown: ${message}`);
     }
 }

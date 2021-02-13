@@ -23,7 +23,7 @@ export default class Http {
         request_options = Object.assign(request_options, options);
 
         if(!this.IsConnected()) {
-            throw new NetworkErrorException('Brak połączenia internetowego.');
+            throw new NetworkErrorException('The internet connection is down.');
         }
 
         let serialized_data = this.SerializePayload(request_options.Payload);
@@ -32,7 +32,7 @@ export default class Http {
             let xhr = new XMLHttpRequest();
             xhr.open(request_options.Method, url, true);
             xhr.onreadystatechange = Http.OnReadyStateChange(resolve, reject);
-            xhr.onerror = () => { reject(new NetworkErrorException('Wystąpił błąd połączenia internetowego.')); };
+            xhr.onerror = () => { reject(new NetworkErrorException('An internet connection error occured.')); };
 
             if(serialized_data !== undefined) xhr.setRequestHeader('Content-Type', 'application/json');
 
@@ -65,8 +65,7 @@ export default class Http {
                     try {
                         parsed_json = JSON.parse(xhr.responseText);
                     } catch(e) {
-                        console.error('Odpowiedź serwera zawiera niepoprawny JSON');
-                        return reject(new MalformedResponseException('Serwer zwrócił odpowiedź w nieznanym formacie.', {
+                        return reject(new MalformedResponseException('The server has returned a malformed response.', {
                             Status: xhr.status,
                             StatusText: xhr.statusText,
                             ResponseText: xhr.responseText
@@ -87,8 +86,7 @@ export default class Http {
                     } catch(e) { }
                 }
 
-                console.error('Serwer nie mógł zrealizować żądania. Kod odpowiedzi: ' + xhr.status);
-                let message = 'Serwer nie był w stanie zrealizować żądania.';
+                let message = 'The server was unable to process the request. Response code: ' + xhr.status;
 
                 if('message' in parsed_json) {
                     message = parsed_json.message;
