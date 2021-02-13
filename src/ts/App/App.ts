@@ -5,4 +5,6 @@ let path = document.location.href.substr(document.baseURI.length);
 
 let rd = new RequestDispatcher();
 rd.SetExecutorStorage(new ExecutorStorage());
-rd.Dispatch(path);
+(async () => {
+    await rd.Dispatch(path);
+})();

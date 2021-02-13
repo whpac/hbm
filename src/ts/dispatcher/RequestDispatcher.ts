@@ -10,14 +10,14 @@ export default class RequestDispatcher {
      * Processes the URI and invokes appropriate controller
      * @param uri The URI to parse
      */
-    public Dispatch(uri: string): void {
+    public async Dispatch(uri: string): Promise<void> {
         let command = this.ReadCommand(uri);
         let executor = this.GetExecutor(command.Callee);
 
         try {
-            executor.Execute(command);
+            await executor.Execute(command);
         } catch(e) {
-
+            // TODO: Display an alert
         }
     }
 
