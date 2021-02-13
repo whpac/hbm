@@ -59,7 +59,7 @@ export default class WalletRepository {
         let wallet = new Wallet(
             BigInt(api_wallet.id),
             api_wallet.name,
-            BigInt(api_wallet.balance),
+            BigInt(api_wallet.balance * 100),   // Balance is stored in base units
             api_wallet.user
         );
 
