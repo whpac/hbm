@@ -18,11 +18,15 @@ export default class TransactionRow extends Component {
 
         this.TransactionType = document.createElement('span');
         this.TransactionType.classList.add('type');
-        this.TransactionType.textContent = 'Salary';
+        this.TransactionType.textContent = transaction.CategoryName;
+        this.TransactionType.title = transaction.CategoryDescription;
 
         this.TransactionDate = document.createElement('span');
         this.TransactionDate.classList.add('date');
         this.TransactionDate.textContent = transaction.DateTime.toLocaleString();
+
+        if(transaction.Price > 0 && transaction.IsExpense == true) transaction.Price *= BigInt(-1);
+        if(transaction.Price < 0 && transaction.IsExpense == false) transaction.Price *= BigInt(-1);
 
         this.MoneyAmount = document.createElement('span');
         this.MoneyAmount.classList.add('money');

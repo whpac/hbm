@@ -53,7 +53,8 @@ export default class WalletListingController implements RequestExecutor {
                     transaction.Name,
                     transaction.Description,
                     transaction.Price,
-                    transaction.DateTime
+                    transaction.DateTime,
+                    transaction.Category
                 ));
             }
         }
