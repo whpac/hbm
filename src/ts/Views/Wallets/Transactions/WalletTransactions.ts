@@ -1,28 +1,42 @@
 import Component from '../../Common/Component';
+import TransactionDto from '../TransactionDto';
 import WalletDto from '../WalletDto';
+import TransactionsTable from './TransactionsTable';
+import WalletName from './WalletName';
+import WalletOperations from './WalletOperations';
 
 export default class WalletTransactions extends Component {
-    protected WalletName: Text;
+    protected WalletName: WalletName;
+    protected TransactionsTable: TransactionsTable;
 
     public constructor() {
         super();
 
-        this.WalletName = document.createTextNode('[Wallet name]');
+        this.WalletName = new WalletName('[Wallet name]');
+        this.TransactionsTable = new TransactionsTable();
     }
 
     protected Render(): HTMLElement {
         let pane = document.createElement('div');
         pane.classList.add('content-pane');
 
-        let pane_heading = document.createElement('h2');
-        pane_heading.classList.add('pane-heading');
-        pane_heading.appendChild(this.WalletName);
-        pane.appendChild(pane_heading);
+        pane.appendChild(this.WalletName.GetElement());
+
+        let menu_strip = new WalletOperations();
+        pane.appendChild(menu_strip.GetElement());
+
+        pane.appendChild(this.TransactionsTable.GetElement());
 
         return pane;
     }
 
-    public DisplayWalletTransactions(wallet: WalletDto | undefined, transactions: never[]) {
-        this.WalletName.textContent = wallet?.Name ?? 'No wallet selected';
+    public DisplayWalletTransactions(wallet: WalletDto | undefined, transactions: TransactionDto[]) {
+        this.WalletName.Text = wallet?.Name ?? 'No wallet selected';
+        this.WalletName.Balance = wallet?.Balance;
+
+        this.TransactionsTable.Purge();
+        for(let transaction of transactions) {
+            this.TransactionsTable.AddRow(transaction);
+        }
     }
 }
