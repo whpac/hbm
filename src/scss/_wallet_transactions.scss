@@ -25,7 +25,17 @@
     .date {grid-area:date; align-self:center; font-size:0.9em; color:rgba(0,0,0,0.6);}
     .money {grid-area:money; align-self:center; justify-self:right; font-size:1.25em; margin-left:8px;}
     .description {
-        grid-area:desc; font-size:0.85em; color:rgba(0,0,0,0.7); padding:0 2px; overflow:hidden;
+        grid-area:desc; font-size:0.85em; color:rgba(0,0,0,0.7); margin-left:2px; overflow:hidden;
         white-space:nowrap; text-overflow:ellipsis;
+    }
+
+    &.selected {
+        grid-template-rows:auto auto auto; grid-template-columns:auto auto 1fr auto;
+        grid-template-areas:'name name name money' 'type dot date money' 'desc desc desc desc';
+
+        .dot {font-size:0.9em;}
+        .type {margin-left:2px;}
+        .date {align-self:baseline;}
+        .description, .name {overflow:unset; white-space:unset; text-overflow:unset;}
     }
 }
