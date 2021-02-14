@@ -2,7 +2,7 @@ import Component from '../Common/Component';
 import { ComponentState } from '../Common/ComponentState';
 import Page from '../Presentation/Page';
 import WalletDto from './WalletDto';
-import WalletList from './WalletList/WalletList';
+import WalletListPane from './WalletList/WalletListPane';
 import WalletListItem from './WalletList/WalletListItem';
 import WalletTransactions from './Transactions/WalletTransactions';
 import TransactionDto from './TransactionDto';
@@ -10,7 +10,7 @@ import LoadingWrapper from '../Common/LoadingWrapper';
 import LoadingCircle from '../Common/LoadingCircle';
 
 export default class WalletsPage extends Component<'WalletSelectionChanged'> implements Page {
-    protected WalletListPane: WalletList;
+    protected WalletListPane: WalletListPane;
     protected WalletTransactionsPane: WalletTransactions;
 
     public constructor() {
@@ -18,7 +18,7 @@ export default class WalletsPage extends Component<'WalletSelectionChanged'> imp
 
         this.WalletTransactionsPane = new WalletTransactions();
         this.WalletTransactionsPane.DisplayLoadingIndicator();
-        this.WalletListPane = new WalletList();
+        this.WalletListPane = new WalletListPane();
         this.WalletListPane.AddEventListener('SelectionChanged', this.OnWalletSelectionChanged.bind(this));
     }
 
@@ -39,12 +39,7 @@ export default class WalletsPage extends Component<'WalletSelectionChanged'> imp
     }
 
     public PopulateWallets(wallets: WalletDto[]) {
-        for(let wallet of wallets) {
-            let new_item = new WalletListItem(wallet);
-            this.WalletListPane.AddItem(new_item);
-        }
-
-        this.WalletListPane.SetSelectedIndex(0);
+        this.WalletListPane.PopulateWallets(wallets);
         this.SetState(ComponentState.READY);
     }
 
