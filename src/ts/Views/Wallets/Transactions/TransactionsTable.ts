@@ -1,42 +1,32 @@
 import Currency from '../../../Utils/Currency';
 import Component from '../../Common/Component';
 import TransactionDto from '../TransactionDto';
+import TransactionRow from './TransactionRow';
 
 export default class TransactionsTable extends Component {
-    protected DataTable: HTMLTableElement;
+    protected DataTable: HTMLElement;
+    protected DataTableBody: HTMLElement;
 
     public constructor() {
         super();
 
-        this.DataTable = document.createElement('table');
-
-        let thead = this.DataTable.createTHead();
-        let tr = thead.insertRow();
-        let headings = ['Name', 'Price'];
-
-        for(let heading of headings) {
-            let th = document.createElement('th');
-            th.textContent = heading;
-            tr.appendChild(th);
-        }
+        this.DataTable = document.createElement('div');
+        this.DataTableBody = document.createElement('div');
+        this.DataTable.appendChild(this.DataTableBody);
     }
 
     protected Render(): HTMLElement {
         return this.DataTable;
     }
 
-    public AddRow(row: TransactionDto) {
-        let tr = this.DataTable.insertRow();
-
-        tr.insertCell().textContent = row.Name;
-        tr.insertCell().textContent = Currency.Format(row.Price);
+    public AddRow(transaction: TransactionDto) {
+        let row = new TransactionRow(transaction);
+        this.DataTableBody.appendChild(row.GetElement());
     }
 
     public Purge() {
-        for(let tbody of this.DataTable.tBodies) {
-            while(tbody.firstChild !== null) {
-                tbody.removeChild(tbody.lastChild!);
-            }
+        while(this.DataTableBody.firstChild !== null) {
+            this.DataTableBody.removeChild(this.DataTableBody.lastChild!);
         }
     }
 }

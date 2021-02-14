@@ -10,3 +10,22 @@
     .balance {grid-area:balance; font-size:1.5em; margin-right:16px;}
     .balance.negative {color:#b71c1c}
 }
+
+.transaction-row {
+    display: grid; grid-template-rows:auto auto; grid-template-columns:auto auto 1fr auto auto 18ch;
+    grid-template-areas:'name dot type . date money' 'desc desc desc desc date money'; gap:4px 8px;
+    align-items:baseline; padding:8px 4px; border-bottom:1px solid #ccc;
+
+    .name {
+        grid-area:name; font-size:1.1em; font-weight:700; overflow:hidden; white-space:nowrap;
+        text-overflow:ellipsis;
+    }
+    .dot {grid-area:dot; color:rgba(0,0,0,0.6);}
+    .type {grid-area:type; font-size:0.9em; color:rgba(0,0,0,0.6);}
+    .date {grid-area:date; align-self:center; font-size:0.9em; color:rgba(0,0,0,0.6);}
+    .money {grid-area:money; align-self:center; justify-self:right; font-size:1.25em; margin-left:8px;}
+    .description {
+        grid-area:desc; font-size:0.85em; color:rgba(0,0,0,0.7); padding:0 2px; overflow:hidden;
+        white-space:nowrap; text-overflow:ellipsis;
+    }
+}
