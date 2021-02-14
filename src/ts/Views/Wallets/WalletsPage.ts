@@ -6,6 +6,8 @@ import WalletList from './WalletList/WalletList';
 import WalletListItem from './WalletList/WalletListItem';
 import WalletTransactions from './Transactions/WalletTransactions';
 import TransactionDto from './TransactionDto';
+import LoadingWrapper from '../Common/LoadingWrapper';
+import LoadingCircle from '../Common/LoadingCircle';
 
 export default class WalletsPage extends Component<'WalletSelectionChanged'> implements Page {
     protected WalletListPane: WalletList;
@@ -15,6 +17,7 @@ export default class WalletsPage extends Component<'WalletSelectionChanged'> imp
         super();
 
         this.WalletTransactionsPane = new WalletTransactions();
+        this.WalletTransactionsPane.DisplayLoadingIndicator();
         this.WalletListPane = new WalletList();
         this.WalletListPane.AddEventListener('SelectionChanged', this.OnWalletSelectionChanged.bind(this));
     }
@@ -28,7 +31,10 @@ export default class WalletsPage extends Component<'WalletSelectionChanged'> imp
     protected Render(): HTMLElement {
         let elem = document.createElement('main');
         elem.appendChild(this.WalletListPane.GetElement());
-        elem.appendChild(this.WalletTransactionsPane.GetElement());
+
+        let loading_wrapper = new LoadingWrapper(this.WalletTransactionsPane, new LoadingCircle(), 'wallet-transactions');
+
+        elem.appendChild(loading_wrapper.GetElement());
         return elem;
     }
 

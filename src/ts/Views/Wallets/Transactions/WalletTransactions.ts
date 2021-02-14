@@ -1,4 +1,5 @@
 import Component from '../../Common/Component';
+import { ComponentState } from '../../Common/ComponentState';
 import ListView from '../../Common/ListView';
 import LoadingCircle from '../../Common/LoadingCircle';
 import LoadingWrapper from '../../Common/LoadingWrapper';
@@ -28,8 +29,7 @@ export default class WalletTransactions extends Component {
         let menu_strip = new WalletOperations();
         pane.appendChild(menu_strip.GetElement());
 
-        let loading_wrapper = new LoadingWrapper(this.TransactionsTable, new LoadingCircle(), 'wallet-transactions');
-        pane.appendChild(loading_wrapper.GetElement());
+        pane.appendChild(this.TransactionsTable.GetElement());
 
         return pane;
     }
@@ -43,10 +43,10 @@ export default class WalletTransactions extends Component {
             let item = new TransactionRow(transaction);
             this.TransactionsTable.AddItem(item);
         }
-        this.TransactionsTable.IsWaitingForData = false;
+        this.SetState(ComponentState.READY);
     }
 
     public DisplayLoadingIndicator() {
-        this.TransactionsTable.IsWaitingForData = true;
+        this.SetState(ComponentState.LOADING);
     }
 }
