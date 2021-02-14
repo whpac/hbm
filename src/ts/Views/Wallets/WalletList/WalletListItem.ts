@@ -1,3 +1,4 @@
+import Currency from '../../../Utils/Currency';
 import Component from '../../Common/Component';
 import { ComponentState } from '../../Common/ComponentState';
 import WalletDto from '../WalletDto';
@@ -42,7 +43,7 @@ export default class WalletListItem<TEvent extends string = ""> extends Componen
         let span_balance = document.createElement('span');
         span_balance.classList.add('balance');
         if(this.Wallet.Balance < 0) span_balance.classList.add('negative');
-        span_balance.textContent = (Number(this.Wallet.Balance) / 100).toLocaleString(undefined, { style: 'currency', currency: 'EUR' });
+        span_balance.textContent = Currency.Format(this.Wallet.Balance);
         this.Button.appendChild(span_balance);
 
         if(this.Wallet.IsDefault) {
