@@ -10,7 +10,7 @@ export default class ListView<TItem extends ListViewItem = ListViewItem, TEvent 
         super();
 
         this.ListElement = document.createElement('ul');
-        this.ListElement.classList.add('wallet-list');
+        this.ListElement.classList.add('list-view');
 
         this.Items = [];
     }

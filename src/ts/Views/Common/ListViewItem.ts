@@ -34,6 +34,7 @@ export default class ListViewItem<TEvent extends string = ""> extends Component<
 
     protected Render(): HTMLElement {
         let li = document.createElement('li');
+        li.classList.add('list-view-item');
         li.appendChild(this.Button);
         return li;
     }

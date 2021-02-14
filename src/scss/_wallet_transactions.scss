@@ -11,10 +11,10 @@
     .balance.negative {color:#b71c1c}
 }
 
-.transaction-row {
+.transaction-row button {
     display: grid; grid-template-rows:auto auto; grid-template-columns:auto auto auto 1fr auto 18ch;
     grid-template-areas:'name dot type . date money' 'desc desc desc desc date money'; gap:4px 8px;
-    align-items:baseline; padding:8px 4px; border-bottom:1px solid #ccc;
+    align-items:baseline; padding:8px 4px;
 
     .name {
         grid-area:name; font-size:1.1em; font-weight:700; overflow:hidden; white-space:nowrap;

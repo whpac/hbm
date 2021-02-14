@@ -1,24 +1,14 @@
-.wallet-list {list-style:none; margin:0; padding:0;}
 .wallet-list-item {
-    &:first-child button {border-top:1px solid #ccc;}
-
     button {
-        font:inherit; text-align:inherit; width:calc(100% - 16px); border:none; background:transparent;
-        display:grid; margin:0; box-sizing:content-box; grid-template-columns:1fr auto;
+        display:grid; grid-template-columns:1fr auto;
         grid-template-rows:1fr auto; grid-template-areas:'name balance' 'subtitle balance';
-        align-items:center; padding:8px 8px; height:40px; gap:0px 8px; cursor:pointer;
-        transition:background 0.3s; appearance:none; border-radius:0;
-        border-bottom:1px solid #ccc;
+        align-items:center; padding:8px 8px; height:56px; gap:0px 8px; cursor:pointer;
+        
 
         .name, .subtitle {overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
         .name {grid-area:name; font-weight:700;}
         .subtitle {grid-area:subtitle; color:rgba(0,0,0,0.6); font-size:0.85em; margin-top:4px;}
         .balance {grid-area:balance; font-size:1.25em;}
         .balance.negative {color:#b71c1c}
-
-        &:hover, &:focus {background:#f0f0f0; outline:none;}
-        &:hover:focus {background:#e0e0e0;}
-        &:active, &:active:focus, &.selected:focus {background:#bbdefb;}
-        &.selected {background:#e3f2fd;}
     }
 }
