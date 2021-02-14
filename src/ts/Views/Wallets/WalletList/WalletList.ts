@@ -1,4 +1,4 @@
-import Component from '../Common/Component';
+import Component from '../../Common/Component';
 import WalletListItem from './WalletListItem';
 
 export default class WalletList extends Component<'SelectionChanged'> {

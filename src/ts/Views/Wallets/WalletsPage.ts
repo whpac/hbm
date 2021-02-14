@@ -2,9 +2,9 @@ import Component from '../Common/Component';
 import { ComponentState } from '../Common/ComponentState';
 import Page from '../Presentation/Page';
 import WalletDto from './WalletDto';
-import WalletList from './WalletList';
-import WalletListItem from './WalletListItem';
-import WalletTransactions from './WalletTransactions';
+import WalletList from './WalletList/WalletList';
+import WalletListItem from './WalletList/WalletListItem';
+import WalletTransactions from './Transactions/WalletTransactions';
 
 export default class WalletsPage extends Component<'WalletSelectionChanged'> implements Page {
     protected WalletListPane: WalletList;
@@ -43,6 +43,10 @@ export default class WalletsPage extends Component<'WalletSelectionChanged'> imp
 
     public GetSelectedWallet(): WalletDto | undefined {
         return this.WalletListPane.GetSelectedItem()?.Wallet;
+    }
+
+    public DisplayWalletTransactions(wallet: WalletDto | undefined, transactions: never[]) {
+        this.WalletTransactionsPane.DisplayWalletTransactions(wallet, transactions);
     }
 
     protected OnWalletSelectionChanged() {

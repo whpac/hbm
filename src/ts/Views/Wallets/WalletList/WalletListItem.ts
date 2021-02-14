@@ -1,6 +1,6 @@
-import Component from '../Common/Component';
-import { ComponentState } from '../Common/ComponentState';
-import WalletDto from './WalletDto';
+import Component from '../../Common/Component';
+import { ComponentState } from '../../Common/ComponentState';
+import WalletDto from '../WalletDto';
 
 export default class WalletListItem<TEvent extends string = ""> extends Component<TEvent | 'Click'> {
     public readonly Wallet: WalletDto;
