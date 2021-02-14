@@ -40,6 +40,7 @@ export default class WalletListingController implements RequestExecutor {
         if(this.WalletCollection === undefined) return;
 
         let wallet_dto = this.WalletsPage?.GetSelectedWallet();
+        this.WalletsPage?.StartedFetchingTransactions();
 
         let wallet: Wallet | undefined;
         let transaction_dtos: TransactionDto[] = [];
