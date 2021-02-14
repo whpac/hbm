@@ -44,6 +44,15 @@ export default class ListView<TItem extends ListViewItem = ListViewItem, TEvent 
         this.FireEvent('SelectionChanged');
     }
 
+    public RemoveAllItems(): void {
+        this.Items = [];
+        this.SelectedItem = undefined;
+
+        while(this.ListElement.firstChild !== null) {
+            this.ListElement.removeChild(this.ListElement.lastChild!);
+        }
+    }
+
     private OnItemClicked(component: Component) {
         if(this.SelectedItem === component) return;
         if(this.SelectedItem !== undefined) {
