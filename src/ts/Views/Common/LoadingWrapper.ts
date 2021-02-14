@@ -18,6 +18,7 @@ export default class LoadingWrapper extends Component {
 
     protected Render(): HTMLElement {
         let wrapper = document.createElement('div');
+        wrapper.classList.add('conditional-loading-wrapper');
         wrapper.appendChild(this.GetApprorpiateContentElement());
         wrapper.classList.add(...this.CssClasses);
         return wrapper;
