@@ -1,3 +1,5 @@
+import TransactionCategory from './TransactionCategory';
+
 export default class Transaction {
     /** The transaction's identifier */
     public readonly Id: bigint;
@@ -10,7 +12,7 @@ export default class Transaction {
     /** Date and time when the transaction took place */
     public DateTime: Date;
     /** Type of the transaction */
-    public Category: never;
+    public Category: TransactionCategory;
     /** Whether the transaction has been finished */
     public IsFinished: boolean;
     /** Identifier of a referenced transaction */
@@ -18,7 +20,7 @@ export default class Transaction {
 
     public constructor(
         id: bigint, name: string, description: string, price: bigint, date_time: Date,
-        category: never, is_finished: boolean, ref_id: bigint | null) {
+        category: TransactionCategory, is_finished: boolean, ref_id: bigint | null) {
         this.Id = id;
         this.Name = name;
         this.Description = description;

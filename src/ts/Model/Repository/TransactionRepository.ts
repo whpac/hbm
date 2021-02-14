@@ -4,12 +4,20 @@ import MalformedResponseException from '../../Network/MalformedResponseException
 import NetworkErrorException from '../../Network/NetworkErrorException';
 import RequestFailedException from '../../Network/RequestFailedException';
 import Transaction from '../Transaction';
+import TransactionCategory from '../TransactionCategory';
+import { TransactionType } from '../TransactionType';
 import Wallet from '../Wallet';
 import Endpoints from './Endpoints';
 import RepositoryFetchException from './RepositoryFetchException';
 
+type ApiResponseTransactionCategory = {
+    description: string | null;
+    id: number;
+    name: string;
+    transactionType: string;
+};
 type ApiResponseTransaction = {
-    category: never;
+    category: ApiResponseTransactionCategory;
     dateOfPurchase: string;
     description: string;
     id: number;
@@ -36,13 +44,20 @@ export default class TransactionRepository {
 
         let transactions: Transaction[] = [];
         for(let t of api_transactions) {
+            let category = new TransactionCategory(
+                BigInt(t.category.id),
+                t.category.name,
+                t.category.description ?? '',
+                t.category.transactionType as TransactionType
+            );
+
             transactions.push(new Transaction(
                 BigInt(t.id),
                 t.name,
                 t.description,
                 BigInt(t.price * 100),    // Price is stored in base units
                 new Date(t.dateOfPurchase),
-                t.category,
+                category,
                 t.isFinished,
                 (t.transactionIdReference !== null) ? BigInt(t.transactionIdReference) : null
             ));
@@ -65,13 +80,19 @@ export default class TransactionRepository {
         }
         let api_transaction = response.Response as ApiResponseTransaction;
 
+        let category = new TransactionCategory(
+            BigInt(api_transaction.category.id),
+            api_transaction.category.name,
+            api_transaction.category.description ?? '',
+            api_transaction.category.transactionType as TransactionType
+        );
         let transaction = new Transaction(
             BigInt(api_transaction.id),
             api_transaction.name,
             api_transaction.description,
             BigInt(api_transaction.price * 100),    // Price is stored in base units
             new Date(api_transaction.dateOfPurchase),
-            api_transaction.category,
+            category,
             api_transaction.isFinished,
             (api_transaction.transactionIdReference !== null) ? BigInt(api_transaction.transactionIdReference) : null
         );
