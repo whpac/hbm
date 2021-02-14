@@ -4,12 +4,14 @@ import { ComponentState } from './ComponentState';
 export default class LoadingWrapper extends Component {
     protected LoadingIndicator: Component;
     protected ActualComponent: Component;
+    protected CssClasses: string[];
 
-    public constructor(component: Component, loading_indicator: Component) {
+    public constructor(component: Component, loading_indicator: Component, ...css: string[]) {
         super();
 
         this.ActualComponent = component;
         this.LoadingIndicator = loading_indicator;
+        this.CssClasses = css;
 
         this.ActualComponent.AddEventListener('StateChanged', this.OnComponentStateChanged.bind(this));
     }
@@ -17,6 +19,7 @@ export default class LoadingWrapper extends Component {
     protected Render(): HTMLElement {
         let wrapper = document.createElement('div');
         wrapper.appendChild(this.GetApprorpiateContentElement());
+        wrapper.classList.add(...this.CssClasses);
         return wrapper;
     }
 
