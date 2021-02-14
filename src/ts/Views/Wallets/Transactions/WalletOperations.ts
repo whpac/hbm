@@ -4,6 +4,7 @@ export default class WalletOperations extends Component {
 
     protected Render(): HTMLElement {
         let div = document.createElement('div');
+        div.classList.add('menu-strip');
 
         let filter_btn = document.createElement('button');
         filter_btn.textContent = 'Filter';

@@ -1,15 +1,14 @@
-.transactions-header {
-    display: grid; grid-template-rows:auto auto; grid-template-areas:'name' 'menu';
-}
-
 .pane-heading-wrapper {
     display: grid; grid-template-columns:auto 1fr auto; grid-template-areas:'name . balance';
-    align-items:center;
+    align-items:center; grid-area:header;
 
     .pane-heading {grid-area:name; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
     .balance {grid-area:balance; font-size:1.5em; margin-right:16px;}
     .balance.negative {color:#b71c1c}
 }
+
+.menu-strip {grid-area:menu-strip;}
+.wallet-transactions {grid-area:content; display:contents;}
 
 .transaction-row button {
     display: grid; grid-template-rows:auto auto; grid-template-columns:auto auto auto 1fr auto 18ch;

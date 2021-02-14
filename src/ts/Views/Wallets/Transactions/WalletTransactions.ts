@@ -28,7 +28,7 @@ export default class WalletTransactions extends Component {
         let menu_strip = new WalletOperations();
         pane.appendChild(menu_strip.GetElement());
 
-        let loading_wrapper = new LoadingWrapper(this.TransactionsTable, new LoadingCircle());
+        let loading_wrapper = new LoadingWrapper(this.TransactionsTable, new LoadingCircle(), 'wallet-transactions');
         pane.appendChild(loading_wrapper.GetElement());
 
         return pane;
