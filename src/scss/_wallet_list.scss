@@ -1,14 +1,14 @@
 .wallet-list {list-style:none; margin:0; padding:0;}
 .wallet-list-item {
-    border-bottom:1px solid #ccc; 
-    &:first-child {border-top:1px solid #ccc;}
+    &:first-child button {border-top:1px solid #ccc;}
 
     button {
         font:inherit; text-align:inherit; width:calc(100% - 16px); border:none; background:transparent;
         display:grid; margin:0; box-sizing:content-box; grid-template-columns:1fr auto;
         grid-template-rows:1fr auto; grid-template-areas:'name balance' 'subtitle balance';
         align-items:center; padding:8px 8px; height:40px; gap:0px 8px; cursor:pointer;
-        transition:background 0.3s; appearance:none;
+        transition:background 0.3s; appearance:none; border-radius:0;
+        border-bottom:1px solid #ccc;
 
         .name, .subtitle {overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
         .name {grid-area:name; font-weight:700;}
@@ -18,7 +18,7 @@
 
         &:hover, &:focus {background:#f0f0f0; outline:none;}
         &:hover:focus {background:#e0e0e0;}
-        &:active, &:active:focus {background:#bbdefb;}
+        &:active, &:active:focus, &.selected:focus {background:#bbdefb;}
         &.selected {background:#e3f2fd;}
     }
 }
