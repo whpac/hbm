@@ -1,8 +1,8 @@
 import Currency from '../../../Utils/Currency';
-import Component from '../../Common/Component';
+import ListViewItem from '../../Common/ListViewItem';
 import TransactionDto from '../TransactionDto';
 
-export default class TransactionRow extends Component {
+export default class TransactionRow extends ListViewItem {
     protected TransactionName: HTMLElement;
     protected TransactionDate: HTMLElement;
     protected MoneyAmount: HTMLElement;
@@ -10,43 +10,53 @@ export default class TransactionRow extends Component {
     protected TransactionType: HTMLElement;
 
     public constructor(transaction: TransactionDto) {
-        super();
-
-        this.TransactionName = document.createElement('span');
-        this.TransactionName.classList.add('name');
-        this.TransactionName.textContent = transaction.Name;
-
-        this.TransactionType = document.createElement('span');
-        this.TransactionType.classList.add('type');
-        this.TransactionType.textContent = transaction.CategoryName;
-        this.TransactionType.title = transaction.CategoryDescription;
-
-        this.TransactionDate = document.createElement('span');
-        this.TransactionDate.classList.add('date');
-        this.TransactionDate.textContent = transaction.DateTime.toLocaleString();
-
-        if(transaction.Price > 0 && transaction.IsExpense == true) transaction.Price *= BigInt(-1);
-        if(transaction.Price < 0 && transaction.IsExpense == false) transaction.Price *= BigInt(-1);
-
-        this.MoneyAmount = document.createElement('span');
-        this.MoneyAmount.classList.add('money');
-        this.MoneyAmount.textContent = Currency.Format(transaction.Price);
-
-        this.TransactionDescription = document.createElement('div');
-        this.TransactionDescription.classList.add('description');
-        this.TransactionDescription.textContent = transaction.Description;
-    }
-
-    protected Render(): HTMLElement {
-        let wrapper = document.createElement('div');
-        wrapper.classList.add('transaction-row');
+        let name = document.createElement('span');
+        name.classList.add('name');
+        name.textContent = transaction.Name;
 
         let dot = document.createElement('span');
         dot.classList.add('dot');
         dot.textContent = '∙';
 
+        let type = document.createElement('span');
+        type.classList.add('type');
+        type.textContent = transaction.CategoryName;
+        type.title = transaction.CategoryDescription;
+
+        let date = document.createElement('span');
+        date.classList.add('date');
+        date.textContent = transaction.DateTime.toLocaleString();
+
+        if(transaction.Price > 0 && transaction.IsExpense == true) transaction.Price *= BigInt(-1);
+        if(transaction.Price < 0 && transaction.IsExpense == false) transaction.Price *= BigInt(-1);
+
+        let money = document.createElement('span');
+        money.classList.add('money');
+        money.textContent = Currency.Format(transaction.Price);
+
+        let desc = document.createElement('div');
+        desc.classList.add('description');
+        desc.textContent = transaction.Description;
+
+        super([name, dot, type, date, money, desc]);
+
+        this.TransactionName = name;
+        this.TransactionType = type;
+        this.TransactionDate = date;
+        this.MoneyAmount = money;
+        this.TransactionDescription = desc;
+    }
+
+    protected Render(): HTMLElement {
+        let li = super.Render();
+        li.classList.add('transaction-row');
+        return li;
+
+        let wrapper = document.createElement('div');
+        wrapper.classList.add('transaction-row');
+
         wrapper.appendChild(this.TransactionName);
-        wrapper.appendChild(dot);
+        //wrapper.appendChild(dot);
         wrapper.appendChild(this.TransactionType);
         wrapper.appendChild(this.TransactionDate);
         wrapper.appendChild(this.MoneyAmount);

@@ -1,19 +1,20 @@
 import Component from '../../Common/Component';
+import ListView from '../../Common/ListView';
 import TransactionDto from '../TransactionDto';
 import WalletDto from '../WalletDto';
-import TransactionsTable from './TransactionsTable';
+import TransactionRow from './TransactionRow';
 import WalletName from './WalletName';
 import WalletOperations from './WalletOperations';
 
 export default class WalletTransactions extends Component {
     protected WalletName: WalletName;
-    protected TransactionsTable: TransactionsTable;
+    protected TransactionsTable: ListView<TransactionRow>;
 
     public constructor() {
         super();
 
         this.WalletName = new WalletName('[Wallet name]');
-        this.TransactionsTable = new TransactionsTable();
+        this.TransactionsTable = new ListView();
     }
 
     protected Render(): HTMLElement {
@@ -34,9 +35,10 @@ export default class WalletTransactions extends Component {
         this.WalletName.Text = wallet?.Name ?? 'No wallet selected';
         this.WalletName.Balance = wallet?.Balance;
 
-        this.TransactionsTable.Purge();
+        this.TransactionsTable.RemoveAllItems();
         for(let transaction of transactions) {
-            this.TransactionsTable.AddRow(transaction);
+            let item = new TransactionRow(transaction);
+            this.TransactionsTable.AddItem(item);
         }
     }
 }
