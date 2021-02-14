@@ -16,7 +16,7 @@ export default class LoadingWrapper extends Component {
 
     protected Render(): HTMLElement {
         let wrapper = document.createElement('div');
-        wrapper.appendChild(this.LoadingIndicator.GetElement());
+        wrapper.appendChild(this.GetApprorpiateContentElement());
         return wrapper;
     }
 
@@ -26,10 +26,14 @@ export default class LoadingWrapper extends Component {
             self.removeChild(self.lastChild!);
         }
 
+        self.appendChild(this.GetApprorpiateContentElement());
+    }
+
+    protected GetApprorpiateContentElement(): HTMLElement {
         if(this.ActualComponent.State == ComponentState.READY) {
-            self.appendChild(this.ActualComponent.GetElement());
+            return this.ActualComponent.GetElement();
         } else {
-            self.appendChild(this.LoadingIndicator.GetElement());
+            return this.LoadingIndicator.GetElement();
         }
     }
 }
