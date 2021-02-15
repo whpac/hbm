@@ -7,6 +7,11 @@ export default class TransactionCollection {
     protected Transactions: Map<bigint, Transaction>;
     protected Wallet: Wallet;
 
+    /**
+     * Creates a transaction collection for a given wallet.
+     * If fails, throws a RepositoryFetchException.
+     * @param wallet The wallet for which to fetch the transactions
+     */
     public static async CreateForWallet(wallet: Wallet): Promise<TransactionCollection> {
         let transactions = await TransactionRepository.GetAllTransactions(wallet);
         return new TransactionCollection(transactions, wallet);
@@ -44,6 +49,9 @@ export default class TransactionCollection {
         throw new ElementNotFoundException(`Transaction with id '${id}' doesn't exist in this collection.`, id);
     }
 
+    /**
+     * Returns all transactions in this collection.
+     */
     public GetAllTransactions(): Transaction[] {
         return Array.from(this.Transactions.values());
     }

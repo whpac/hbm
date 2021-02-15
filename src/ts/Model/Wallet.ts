@@ -20,7 +20,9 @@ export default class Wallet {
     }
 
     /**
-     * Returns a colletion of transactions for this wallet
+     * Returns a colletion of transactions for this wallet.
+     * A RepositoryFetchException is thrown when it's impossible to load
+     * the transactions.
      */
     public async GetTransactions(): Promise<TransactionCollection> {
         if(this.Transactions === undefined) {
