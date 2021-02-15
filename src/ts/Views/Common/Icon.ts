@@ -10,11 +10,12 @@ export default class Icon extends Component {
         this.IconElement.name = value;
     }
 
-    public constructor(icon_name: string) {
+    public constructor(icon_name: string, ...css_classes: string[]) {
         super();
 
         this.IconElement = document.createElement('ion-icon') as HTMLIonIconElement;
         this.IconElement.classList.add('icon');
+        this.IconElement.classList.add(...css_classes);
         this.IconName = icon_name;
     }
 
