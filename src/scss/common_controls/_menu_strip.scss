@@ -17,10 +17,23 @@
             padding:8px 12px 6px 12px; cursor:pointer; transition:background 0.3s;
             font-size:0.9em;
 
-            .icon {font-size:1.2em; margin:-0.1em 4px 0 -4px; vertical-align:top;}
+            .icon {font-size:1.2em; vertical-align:top; pointer-events:none;}
+            .command-icon {margin:-0.1em 4px 0 -4px;}
+            .dropdown-icon {margin:-0.1em -4px 0 4px;}
 
             &:hover {background:#eaeaea;}
             &:active {background:#e0e0e0;}
         }
+    }
+}
+
+.menu-strip-button.submenu {
+    .menu {
+        position:absolute; background:#f8f8f8; border:1px solid #ccc;
+        box-shadow:0 0 4px rgba(0,0,0,0.4);
+
+        li {display:block;}
+
+        &.hidden {display:none;}
     }
 }

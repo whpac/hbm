@@ -1,5 +1,7 @@
 import Component from '../Component';
+import { DropdownDirection } from './DropdownDirection';
 import MenuStripItem from './MenuStripItem';
+import SubMenu from './SubMenu';
 
 export default class MenuStrip extends Component {
     private MainMenuElement: HTMLUListElement;
@@ -22,11 +24,19 @@ export default class MenuStrip extends Component {
         return wrapper;
     }
 
-    public AddMenuItem(item: MenuStripItem) {
+    public AddMenuItem(item: MenuStripItem<string>) {
         this.MainMenuElement.appendChild(item.GetElement());
+
+        if(item instanceof SubMenu) {
+            item.DropdownDirection = DropdownDirection.VERTICAL;
+        }
     }
 
-    public AddSecondaryMenuItem(item: MenuStripItem) {
+    public AddSecondaryMenuItem(item: MenuStripItem<string>) {
         this.SecondaryMenuElement.appendChild(item.GetElement());
+
+        if(item instanceof SubMenu) {
+            item.DropdownDirection = DropdownDirection.VERTICAL;
+        }
     }
 }
