@@ -60,6 +60,20 @@ export default abstract class Component<Events extends string = ""> {
     }
 
     /**
+     * Hides the component
+     */
+    public Hide() {
+        this.GetElement().style.display = 'none';
+    }
+
+    /**
+     * Displays the component
+     */
+    public Unhide() {
+        this.GetElement().style.display = '';
+    }
+
+    /**
      * Renders the component and returns its HTML representation
      */
     protected abstract Render(): HTMLElement;
