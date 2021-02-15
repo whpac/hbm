@@ -10,6 +10,8 @@ mkdir dist\css
 xcopy src\css dist\css /E /H /C /R /Q /Y 1>NUL 2>NUL
 mkdir dist\html
 xcopy src\html dist\html /E /H /C /R /Q /Y 1>NUL 2>NUL
+mkdir dist\fonts
+xcopy src\fonts dist\fonts /E /H /C /R /Q /Y 1>NUL 2>NUL
 
 :: Compile SCSS and TypeScript
 mkdir dist\js

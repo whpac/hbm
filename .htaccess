@@ -2,8 +2,9 @@ Options FollowSymLinks
 RewriteEngine On
 RewriteBase "/hbm/"
 
-# Don't redirect JavaScript and CSS
+# Don't redirect Fonts, JavaScript and CSS
 RewriteRule "^(css/.*)$" "dist/$1" [END]
+RewriteRule "^(fonts/.*)$" "dist/$1" [END]
 RewriteRule "^(js/.*)$" "dist/$1.js" [END]
 
 # Pass traffic to the proxy service
