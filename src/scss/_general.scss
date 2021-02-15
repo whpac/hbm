@@ -5,8 +5,9 @@ body {
 
 %reset-button {
     font:inherit; text-align:inherit; border:none; background:transparent; appearance:none;
-    border-radius:0; margin:0; padding:0; width:100%;
+    border-radius:0; margin:0; padding:0; width:100%; color:inherit;
 }
 
 @import "common_controls/list_view";
 @import "common_controls/loading_wheel";
+@import "common_controls/menu_strip";

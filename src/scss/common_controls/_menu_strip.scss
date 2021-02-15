@@ -1,0 +1,26 @@
+.menu-strip {
+    display:grid; grid-template-columns:auto 1fr auto;
+    background:#f8f8f8; color:rgba(0,0,0,0.8);
+
+    .main {grid-column:1;}
+    .secondary {grid-column:3;}
+}
+
+.menu-strip ul {
+    list-style:none; margin:0; padding:0;
+
+    > li {
+        display:inline-block;
+
+        &.menu-strip-button button{
+            @extend %reset-button;
+            padding:8px 12px 6px 12px; cursor:pointer; transition:background 0.3s;
+            font-size:0.9em;
+
+            .icon {font-size:1.2em; margin:-0.1em 4px 0 -4px; vertical-align:top;}
+
+            &:hover {background:#eaeaea;}
+            &:active {background:#e0e0e0;}
+        }
+    }
+}

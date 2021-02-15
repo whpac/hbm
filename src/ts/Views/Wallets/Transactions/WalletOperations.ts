@@ -1,31 +1,16 @@
-import Component from '../../Common/Component';
+import MenuButton from '../../Common/MenuStrip/MenuButton';
+import MenuStrip from '../../Common/MenuStrip/MenuStrip';
 
-export default class WalletOperations extends Component {
+export default class WalletOperations extends MenuStrip {
 
-    protected Render(): HTMLElement {
-        let div = document.createElement('div');
-        div.classList.add('menu-strip');
+    public constructor() {
+        super();
 
-        let filter_btn = document.createElement('button');
-        filter_btn.textContent = 'Filter';
-        div.appendChild(filter_btn);
+        this.AddMenuItem(new MenuButton('Add', { ToolTip: 'Add a new transaction', IconName: 'add-outline' }));
+        this.AddMenuItem(new MenuButton('Edit', { ToolTip: 'Edit the selected transaction', IconName: 'create-outline' }));
+        this.AddMenuItem(new MenuButton('Remove', { ToolTip: 'Remove the selected transaction', IconName: 'trash-outline' }));
 
-        div.appendChild(document.createTextNode('|'));
-
-        let new_transaction_btn = document.createElement('button');
-        new_transaction_btn.textContent = 'New transaction';
-        div.appendChild(new_transaction_btn);
-
-        div.appendChild(document.createTextNode('|'));
-
-        let edit_btn = document.createElement('button');
-        edit_btn.textContent = 'Edit';
-        div.appendChild(edit_btn);
-
-        let remove_btn = document.createElement('button');
-        remove_btn.textContent = 'Remove';
-        div.appendChild(remove_btn);
-
-        return div;
+        this.AddSecondaryMenuItem(new MenuButton('Filter', { ToolTip: 'Decide which transactions to display', IconName: 'filter-outline' }));
+        this.AddSecondaryMenuItem(new MenuButton('Wallet V'));
     }
 }
