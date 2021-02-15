@@ -24,6 +24,8 @@
             &:hover {background:#eaeaea;}
             &:active {background:#e0e0e0;}
         }
+
+        &.separator {border:none; border-left:1px solid #ccc; margin:-5px 4px; height:20px;}
     }
 }
 
@@ -32,7 +34,11 @@
         position:absolute; background:#f8f8f8; border:1px solid #ccc;
         box-shadow:0 0 4px rgba(0,0,0,0.4);
 
-        li {display:block;}
+        li {
+            display:block;
+
+            &.separator {border:none; border-bottom:1px solid #ccc; margin:2px 8px; height:0;}
+        }
 
         &.hidden {display:none;}
     }
