@@ -71,8 +71,8 @@ export default class ListView<TItem extends ListViewItem = ListViewItem, TEvent 
      * Removes all items from the ListView
      */
     public RemoveAllItems(): void {
+        this.SetSelectedIndex(-1);
         this.Items = [];
-        this.SelectedItem = undefined;
 
         while(this.ListElement.firstChild !== null) {
             this.ListElement.removeChild(this.ListElement.lastChild!);
