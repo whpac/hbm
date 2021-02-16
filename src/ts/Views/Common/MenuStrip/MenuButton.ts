@@ -7,6 +7,7 @@ export default class MenuButton extends MenuStripItem {
     protected Icon: Icon;
     protected DropdownIcon: Icon;
     protected ToolTip: string | undefined;
+    protected ButtonElement: HTMLButtonElement;
 
     public get Text() {
         return this.CaptionNode.textContent ?? '';
@@ -22,30 +23,32 @@ export default class MenuButton extends MenuStripItem {
         this.Icon = new Icon(options.IconName ?? '', 'command-icon');
         this.DropdownIcon = new Icon('', 'dropdown-icon');
         this.ToolTip = options.ToolTip;
+        this.ButtonElement = document.createElement('button');
 
-        this.OnIconRequirementChange();
+        this.AddEventListener('DropdownDirectionChanged', this.OnDropdownDirectionChange.bind(this));
         this.OnDropdownDirectionChange();
+        this.AddEventListener('EnabledChanged', this.OnEnabledChange.bind(this));
+        this.OnEnabledChange();
+        this.AddEventListener('IconRequirementChanged', this.OnIconRequirementChange.bind(this));
+        this.OnIconRequirementChange();
     }
 
     protected Render(): HTMLElement {
         let li = super.Render();
-        let button = document.createElement('button');
-        button.appendChild(this.Icon.GetElement());
-        button.appendChild(this.CaptionNode);
-        button.appendChild(this.DropdownIcon.GetElement());
-        button.addEventListener('click',
+        this.ButtonElement.appendChild(this.Icon.GetElement());
+        this.ButtonElement.appendChild(this.CaptionNode);
+        this.ButtonElement.appendChild(this.DropdownIcon.GetElement());
+        this.ButtonElement.addEventListener('click',
             (() => this.FireEvent('Click')).bind(this)
         );
 
         li.classList.add('menu-strip-button');
-        li.appendChild(button);
+        li.appendChild(this.ButtonElement);
         if(this.ToolTip !== undefined) li.title = this.ToolTip;
         return li;
     }
 
     protected OnIconRequirementChange() {
-        super.OnIconRequirementChange();
-
         if(this.Icon.IconName === '' && !this.IconSpaceRequired) {
             this.Icon.Hide();
         } else {
@@ -54,8 +57,6 @@ export default class MenuButton extends MenuStripItem {
     }
 
     protected OnDropdownDirectionChange() {
-        super.OnDropdownDirectionChange();
-
         switch(this.DropdownDirection) {
             case DropdownDirection.NO_DROPDOWN:
                 this.DropdownIcon.IconName = '';
@@ -70,6 +71,10 @@ export default class MenuButton extends MenuStripItem {
                 this.DropdownIcon.Unhide();
                 break;
         }
+    }
+
+    protected OnEnabledChange() {
+        this.ButtonElement.disabled = !this.Enabled;
     }
 };
 

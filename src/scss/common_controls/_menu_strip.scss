@@ -23,6 +23,13 @@
 
             &:hover {background:#eaeaea;}
             &:active {background:#e0e0e0;}
+
+            &:disabled {
+                color:rgba(0,0,0,0.3); cursor:default;
+
+                &:hover, &:active {background:unset;}
+                &:focus {outline:none;}
+            }
         }
 
         &.separator {border:none; border-left:1px solid #ccc; margin:-5px 4px; height:20px;}

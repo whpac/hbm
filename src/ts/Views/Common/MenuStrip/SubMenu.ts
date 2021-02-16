@@ -17,6 +17,9 @@ export default class SubMenu extends MenuStripItem {
 
         document.addEventListener('click', this.HandleDocumentClick.bind(this));
         window.addEventListener('resize', this.CalculatePosition.bind(this));
+
+        this.AddEventListener('DropdownDirectionChanged', this.OnDropdownDirectionChange.bind(this));
+        this.AddEventListener('IconRequirementChanged', this.OnIconRequirementChange.bind(this));
     }
 
     protected Render(): HTMLElement {
