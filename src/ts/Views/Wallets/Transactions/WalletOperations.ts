@@ -27,7 +27,15 @@ export default class WalletOperations extends MenuStrip {
         wallet_submenu.AddMenuItem(new MenuButton('Set as default'));
         this.AddSecondaryMenuItem(wallet_submenu);
 
-        this.EditButton.Enabled = false;
-        this.RemoveButton.Enabled = false;
+        this.SetIsAnyTransactionSelected(false);
+    }
+
+    /**
+     * Sets if any transaction is selected. If so, the transaction options will be enabled
+     * @param is_selected Whether any transaction is selected
+     */
+    public SetIsAnyTransactionSelected(is_selected: boolean) {
+        this.EditButton.Enabled = is_selected;
+        this.RemoveButton.Enabled = is_selected;
     }
 }

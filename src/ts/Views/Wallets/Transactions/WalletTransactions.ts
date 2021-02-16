@@ -1,8 +1,6 @@
 import Component from '../../Common/Component';
 import { ComponentState } from '../../Common/ComponentState';
 import ListView from '../../Common/ListView';
-import LoadingCircle from '../../Common/LoadingCircle';
-import LoadingWrapper from '../../Common/LoadingWrapper';
 import TransactionDto from '../TransactionDto';
 import WalletDto from '../WalletDto';
 import TransactionRow from './TransactionRow';
@@ -11,13 +9,17 @@ import WalletOperations from './WalletOperations';
 
 export default class WalletTransactions extends Component {
     protected WalletName: WalletName;
+    protected WalletOperations: WalletOperations;
     protected TransactionsTable: ListView<TransactionRow>;
 
     public constructor() {
         super();
 
         this.WalletName = new WalletName('[Wallet name]');
+        this.WalletOperations = new WalletOperations();
         this.TransactionsTable = new ListView();
+
+        this.TransactionsTable.AddEventListener('SelectionChanged', this.OnTransactionSelectionChange.bind(this));
     }
 
     protected Render(): HTMLElement {
@@ -25,10 +27,7 @@ export default class WalletTransactions extends Component {
         pane.classList.add('content-pane');
 
         pane.appendChild(this.WalletName.GetElement());
-
-        let menu_strip = new WalletOperations();
-        pane.appendChild(menu_strip.GetElement());
-
+        pane.appendChild(this.WalletOperations.GetElement());
         pane.appendChild(this.TransactionsTable.GetElement());
 
         return pane;
@@ -48,5 +47,9 @@ export default class WalletTransactions extends Component {
 
     public DisplayLoadingIndicator() {
         this.SetState(ComponentState.LOADING);
+    }
+
+    protected OnTransactionSelectionChange() {
+        this.WalletOperations.SetIsAnyTransactionSelected(this.TransactionsTable.GetSelectedItem() !== undefined);
     }
 }
