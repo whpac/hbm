@@ -36,7 +36,13 @@ export default class TransactionRow extends ListViewItem {
 
         let desc = document.createElement('div');
         desc.classList.add('description');
-        desc.textContent = transaction.Description;
+        if(transaction.Description != '') {
+            desc.classList.remove('empty');
+            desc.textContent = transaction.Description;
+        } else {
+            desc.classList.add('empty');
+            desc.textContent = 'No description provided.';
+        }
 
         super([name, dot, type, date, money, desc]);
 

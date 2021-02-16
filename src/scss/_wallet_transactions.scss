@@ -26,6 +26,8 @@
     .description {
         grid-area:desc; font-size:0.85em; color:rgba(0,0,0,0.7); margin-left:2px; overflow:hidden;
         white-space:nowrap; text-overflow:ellipsis;
+
+        &.empty {color:rgba(0,0,0,0.4); font-style:italic;}
     }
 
     &.selected {
