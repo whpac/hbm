@@ -1,7 +1,7 @@
 import BrowserAdapter from './BrowserAdapter';
 import Page from './Page';
 
-export default class Presenter {
+export default class PagePresenter {
     protected static CurrentPage: Page | undefined;
     protected static DisplayAdapter: BrowserAdapter | undefined;
 

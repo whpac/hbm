@@ -1,6 +1,6 @@
 import RequestDispatcher from '../Dispatcher/RequestDispatcher';
 import BrowserAdapter from '../Views/Presentation/BrowserAdapter';
-import Presenter from '../Views/Presentation/Presenter';
+import PagePresenter from '../Views/Presentation/PagePresenter';
 import ExecutorStorage from './ExecutorStorage';
 
 function Main() {
@@ -12,7 +12,7 @@ function Main() {
         return;
     }
     let browser_adapter = new BrowserAdapter(content_wrapper);
-    Presenter.SetDisplayAdapter(browser_adapter);
+    PagePresenter.SetDisplayAdapter(browser_adapter);
 
     let rd = new RequestDispatcher();
     rd.SetExecutorStorage(new ExecutorStorage());

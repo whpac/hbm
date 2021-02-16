@@ -2,7 +2,7 @@ import Command from '../Dispatcher/Command';
 import RequestExecutor from '../Dispatcher/RequestExecutor';
 import Wallet from '../Model/Wallet';
 import WalletCollection from '../Model/WalletCollection';
-import Presenter from '../Views/Presentation/Presenter';
+import PagePresenter from '../Views/Presentation/PagePresenter';
 import TransactionDto from '../Views/Wallets/TransactionDto';
 import WalletDto from '../Views/Wallets/WalletDto';
 import WalletsPage from '../Views/Wallets/WalletsPage';
@@ -14,7 +14,7 @@ export default class WalletListingController implements RequestExecutor {
     async Execute(command: Command): Promise<void> {
         this.WalletsPage = new WalletsPage();
         this.WalletsPage.AddEventListener('WalletSelectionChanged', this.DisplayWalletRequested.bind(this));
-        let page_awaiter = Presenter.DisplayPage(this.WalletsPage);
+        let page_awaiter = PagePresenter.DisplayPage(this.WalletsPage);
 
         this.WalletCollection = await WalletCollection.GetCollection();
         let wallets = this.WalletCollection.GetAllWallets();
