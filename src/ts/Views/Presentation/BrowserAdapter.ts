@@ -1,3 +1,4 @@
+// TODO: Make it universal to dialogs and toasts too
 export default class BrowserAdapter {
     /** Contains the content wrapper which will house the displayed pages */
     protected ContentWrapper: HTMLElement;
@@ -21,6 +22,7 @@ export default class BrowserAdapter {
      * Prepares the display to page change
      */
     public PrepareToPageChange() {
+        // TODO: Display an actual loading wheel
         this.ContentWrapper.appendChild(document.createTextNode('Loading...'));
     }
 }
