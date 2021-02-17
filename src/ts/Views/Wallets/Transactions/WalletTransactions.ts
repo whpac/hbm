@@ -49,6 +49,10 @@ export default class WalletTransactions extends Component {
         this.SetState(ComponentState.LOADING);
     }
 
+    public GetSelectedTransaction(): TransactionDto | undefined {
+        return this.TransactionsTable.GetSelectedItem()?.Transaction;
+    }
+
     protected OnTransactionSelectionChange() {
         this.WalletOperations.SetIsAnyTransactionSelected(this.TransactionsTable.GetSelectedItem() !== undefined);
     }

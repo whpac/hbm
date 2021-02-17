@@ -55,6 +55,10 @@ export default class WalletsPage extends Component<'WalletSelectionChanged'> imp
         this.WalletTransactionsPane.DisplayWalletTransactions(wallet, transactions);
     }
 
+    public GetSelectedTransaction(): TransactionDto | undefined {
+        return this.WalletTransactionsPane.GetSelectedTransaction();
+    }
+
     protected OnWalletSelectionChanged() {
         this.FireEvent('WalletSelectionChanged');
     }

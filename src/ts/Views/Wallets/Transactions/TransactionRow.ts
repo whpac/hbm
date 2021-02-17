@@ -3,6 +3,7 @@ import ListViewItem from '../../Common/ListViewItem';
 import TransactionDto from '../TransactionDto';
 
 export default class TransactionRow extends ListViewItem {
+    public readonly Transaction: TransactionDto;
     protected TransactionName: HTMLElement;
     protected TransactionDate: HTMLElement;
     protected MoneyAmount: HTMLElement;
@@ -46,6 +47,7 @@ export default class TransactionRow extends ListViewItem {
 
         super([name, dot, type, date, money, desc]);
 
+        this.Transaction = transaction;
         this.TransactionName = name;
         this.TransactionType = type;
         this.TransactionDate = date;
@@ -57,17 +59,5 @@ export default class TransactionRow extends ListViewItem {
         let li = super.Render();
         li.classList.add('transaction-row');
         return li;
-
-        let wrapper = document.createElement('div');
-        wrapper.classList.add('transaction-row');
-
-        wrapper.appendChild(this.TransactionName);
-        //wrapper.appendChild(dot);
-        wrapper.appendChild(this.TransactionType);
-        wrapper.appendChild(this.TransactionDate);
-        wrapper.appendChild(this.MoneyAmount);
-        wrapper.appendChild(this.TransactionDescription);
-
-        return wrapper;
     }
 }
