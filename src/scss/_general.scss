@@ -28,10 +28,16 @@ textarea {resize:vertical; font-family:inherit; height:3.8em;}
 input[type=text], input[type=number], input[type=datetime-local], textarea {
     font-family:inherit; font-size:0.8em; padding:4px; border:1px solid #444;
     transition:border-color 0.3s, box-shadow 0.3s;
+    --emph-color:#2196f3;
 
-    &:hover {border-color:#2196f3;}
+    &:hover {border-color:var(--emph-color);}
     &:active, &:focus {
-        border:1px solid #2196f3; box-shadow:0 0 4px #2196f3; outline:none;
+        border:1px solid var(--emph-color); box-shadow:0 0 4px var(--emph-color); outline:none;
+    }
+
+    &:invalid, &.error {
+        --emph-color:#f44336; border-color:var(--emph-color); background:#ffebee;
+        color:#b71c1c;
     }
 }
 input[type=datetime-local] {font-family:monospace;}
