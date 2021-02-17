@@ -1,6 +1,6 @@
 import Component from '../Component';
 
-export default class DialogButton extends Component {
+export default class DialogButton extends Component<'Click'> {
     protected ButtonElement: HTMLButtonElement;
 
     /** Gets or sets the text displayed on the button */
@@ -15,6 +15,7 @@ export default class DialogButton extends Component {
         super();
 
         this.ButtonElement = document.createElement('button');
+        this.ButtonElement.addEventListener('click', this.OnClick.bind(this));
         this.ButtonElement.textContent = caption;
 
         if(is_primary) this.ButtonElement.classList.add('primary');
@@ -22,5 +23,9 @@ export default class DialogButton extends Component {
 
     protected Render(): HTMLElement {
         return this.ButtonElement;
+    }
+
+    protected OnClick() {
+        this.FireEvent('Click');
     }
 }
