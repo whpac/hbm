@@ -2,11 +2,11 @@ import Component from './Component';
 import { ComponentState } from './ComponentState';
 
 export default class LoadingWrapper extends Component {
-    protected LoadingIndicator: Component;
-    protected ActualComponent: Component;
+    protected LoadingIndicator: Component<string>;
+    protected ActualComponent: Component<string>;
     protected CssClasses: string[];
 
-    public constructor(component: Component, loading_indicator: Component, ...css: string[]) {
+    public constructor(component: Component<string>, loading_indicator: Component<string>, ...css: string[]) {
         super();
 
         this.ActualComponent = component;

@@ -3,7 +3,7 @@ import { DropdownDirection } from './DropdownDirection';
 import MenuStripItem from './MenuStripItem';
 import SubMenu from './SubMenu';
 
-export default class MenuStrip extends Component {
+export default class MenuStrip<TEvents extends string = ''> extends Component<TEvents> {
     private MainMenuElement: HTMLUListElement;
     private SecondaryMenuElement: HTMLUListElement;
 
