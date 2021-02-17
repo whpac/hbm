@@ -1,6 +1,6 @@
 import { ComponentState } from './ComponentState';
 
-type EventHandler = (sender: Component<string>) => void;
+type EventHandler = (sender: Component<string>, data: any) => void;
 type BasicComponentEvents = 'StateChanged';
 
 export default abstract class Component<Events extends string = ""> {
@@ -42,11 +42,11 @@ export default abstract class Component<Events extends string = ""> {
      * Fires an event
      * @param event_name Name of an event to fire
      */
-    protected FireEvent(event_name: BasicComponentEvents | Events) {
+    protected FireEvent(event_name: BasicComponentEvents | Events, data: any = undefined) {
         let handlers = this.EventListeners.get(event_name) ?? [];
         for(let handler of handlers) {
             if(typeof handler !== 'function') continue;
-            handler(this);
+            handler(this, data);
         }
     }
 
