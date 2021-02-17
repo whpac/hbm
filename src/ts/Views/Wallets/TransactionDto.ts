@@ -7,7 +7,7 @@ export default class TransactionDto {
     public IsExpense: boolean;
 
     public constructor(
-        public readonly Id: bigint,
+        public readonly Id: bigint | undefined,
         public Name: string,
         public Description: string,
         public Price: bigint,
