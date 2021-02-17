@@ -1,9 +1,11 @@
+import Component from '../Common/Component';
 import Dialog from '../Common/Dialog/Dialog';
 import BrowserAdapter from './BrowserAdapter';
 
 export default class DialogPresenter {
     protected static Dialogs: Dialog[] | undefined;
     protected static DisplayAdapter: BrowserAdapter | undefined;
+    protected static DialogBackplate: HTMLElement | undefined;
 
     /**
      * Displays a dialog
@@ -19,6 +21,7 @@ export default class DialogPresenter {
         this.Dialogs.push(dialog);
 
         if(this.Dialogs.length == 1) this.DisplayBackplate();
+        dialog.AddEventListener('Closed', this.OnDialogHide.bind(this));
 
         this.DisplayAdapter.ChangePage(dialog.GetElement());
     }
@@ -49,10 +52,27 @@ export default class DialogPresenter {
     }
 
     protected static DisplayBackplate() {
-
+        if(this.DialogBackplate === undefined) {
+            this.DialogBackplate = document.createElement('div');
+            this.DialogBackplate.classList.add('dialog-backplate');
+        }
+        document.body.appendChild(this.DialogBackplate);
     }
 
     protected static HideBackplate() {
+        if(this.DialogBackplate === undefined) return;
+        document.body.removeChild(this.DialogBackplate);
+    }
 
+    protected static OnDialogHide(component: Component<string>) {
+        if(this.Dialogs === undefined) return;
+
+        let dialog = component as Dialog;
+
+        if(this.Dialogs[this.Dialogs.length - 1] === dialog) {
+            this.ReturnToPreviousDialog();
+        } else {
+            this.Dialogs = this.Dialogs.filter((d) => d !== dialog);
+        }
     }
 }
