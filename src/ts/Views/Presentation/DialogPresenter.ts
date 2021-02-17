@@ -11,7 +11,7 @@ export default class DialogPresenter {
      * Displays a dialog
      * @param dialog The dialog to display
      */
-    public static async DisplayDialog(dialog: Dialog) {
+    public static async DisplayDialog(dialog: Dialog<string>) {
         if(this.DisplayAdapter === undefined) {
             // TODO: Throw
             throw null;
