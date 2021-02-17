@@ -1,7 +1,9 @@
 body {
     background:#f8f8f8; color:rgba(0,0,0,0.87); margin:0; font-size:16px;
-    font-family:sans-serif;
+    font-family:sans-serif; cursor:default;
 }
+
+ion-icon {pointer-events:none;}
 
 %reset-button {
     font:inherit; text-align:inherit; border:none; background:transparent; appearance:none;
@@ -11,3 +13,24 @@ body {
 @import "common_controls/list_view";
 @import "common_controls/loading_wheel";
 @import "common_controls/menu_strip";
+@import "common_controls/dialog";
+
+label {font-size:0.9em;}
+textarea {resize:vertical; font-family:inherit; height:3.8em;}
+.grid-form {
+    display:grid; grid-template-columns:auto 1fr; gap:4px 8px; align-items:center;
+
+    label, .label-column {grid-column:1; justify-self:left;}
+    input, .input-column {grid-column:2;}
+    .whole-row {grid-column:1 / span 2;}
+}
+
+input[type=text], input[type=number], input[type=datetime-local], textarea {
+    font-family:inherit; font-size:0.8em; padding:4px; border:1px solid #444;
+    transition:border-color 0.3s, box-shadow 0.3s;
+
+    &:hover {border-color:#2196f3;}
+    &:active, &:focus {
+        border:1px solid #2196f3; box-shadow:0 0 4px #2196f3; outline:none;
+    }
+}
