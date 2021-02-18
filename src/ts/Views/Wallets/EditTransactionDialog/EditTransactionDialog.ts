@@ -1,7 +1,12 @@
+import TransactionCategory from '../../../Model/TransactionCategory';
+import { TransactionType } from '../../../Model/TransactionType';
+import DateTime from '../../../Utils/Date';
 import Dialog from '../../Common/Dialog/Dialog';
 import DialogButton from '../../Common/Dialog/DialogButton';
+import TransactionDto from '../TransactionDto';
 
-export default class EditTransactionDialog extends Dialog {
+export default class EditTransactionDialog extends Dialog<'SaveRequested'> {
+    protected TransactionId: bigint | undefined;
     protected NameInput: HTMLInputElement;
     protected DescriptionInput: HTMLTextAreaElement;
     protected MoneyInput: HTMLInputElement;
@@ -37,6 +42,8 @@ export default class EditTransactionDialog extends Dialog {
         money_label.textContent = 'Money transferred:';
         this.MoneyInput = document.createElement('input');
         this.MoneyInput.type = 'number';
+        this.MoneyInput.step = '0.01';
+        this.MoneyInput.min = '0';
         this.MoneyInput.name = 'transaction-money';
         money_label.htmlFor = this.MoneyInput.id = 'field-transaction-money';
         grid_form.appendChild(money_label);
@@ -51,8 +58,63 @@ export default class EditTransactionDialog extends Dialog {
         grid_form.appendChild(date_label);
         grid_form.appendChild(this.DateInput);
 
-        this.SetTitle('Edit transaction');
-        this.AddButton(new DialogButton('Discard'));
-        this.AddButton(new DialogButton('Save', true));
+        let discard_button = new DialogButton('Discard');
+        discard_button.AddEventListener('Click', this.Hide.bind(this));
+        this.AddButton(discard_button);
+
+        let save_button = new DialogButton('Save', true);
+        save_button.AddEventListener('Click', this.OnSaveRequested.bind(this));
+        this.AddButton(save_button);
+    }
+
+    public Populate(transaction: TransactionDto | undefined) {
+        this.TransactionId = transaction?.Id;
+        this.NameInput.value = transaction?.Name ?? '';
+        this.DescriptionInput.value = transaction?.Description ?? '';
+
+        if(transaction !== undefined) {
+            this.MoneyInput.value = (Number(transaction.Price) / 100).toString();
+            this.DateInput.value = DateTime.ToInputFormat(transaction.DateTime);
+            this.SetTitle('Edit transaction');
+        } else {
+            this.MoneyInput.value = '0';
+            this.DateInput.value = DateTime.ToInputFormat(new Date());
+            this.SetTitle('New transaction');
+        }
+
+    }
+
+    protected OnSaveRequested() {
+        if(!this.Validate()) return;
+        this.FireEvent('SaveRequested', new TransactionDto(
+            this.TransactionId,
+            this.NameInput.value,
+            this.DescriptionInput.value,
+            BigInt(Number(this.MoneyInput.value) * 100),
+            new Date(this.DateInput.value),
+            new TransactionCategory(BigInt(2), '(null)', '(null)', TransactionType.REVENUES)
+        ));
+    }
+
+    protected Validate() {
+        let is_valid = true;
+
+        if(this.NameInput.value.trim().length == 0) {
+            this.NameInput.setCustomValidity('The transaction name must not be empty');
+        } else {
+            this.NameInput.setCustomValidity('');
+        }
+        is_valid &&= this.NameInput.reportValidity();
+        is_valid &&= this.DescriptionInput.reportValidity();
+        is_valid &&= this.MoneyInput.reportValidity();
+
+        if(this.DateInput.value.trim().length == 0 || isNaN(Date.parse(this.DateInput.value))) {
+            this.DateInput.setCustomValidity('The transaction date field must contain a correct date');
+        } else {
+            this.DateInput.setCustomValidity('');
+        }
+        is_valid &&= this.DateInput.reportValidity();
+
+        return is_valid;
     }
 }
