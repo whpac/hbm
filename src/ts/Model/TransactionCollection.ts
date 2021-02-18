@@ -1,4 +1,5 @@
 import ElementNotFoundException from './ElementNotFoundException';
+import RawTransaction from './RawTransaction';
 import TransactionRepository from './Repository/TransactionRepository';
 import Transaction from './Transaction';
 import Wallet from './Wallet';
@@ -54,5 +55,15 @@ export default class TransactionCollection {
      */
     public GetAllTransactions(): Transaction[] {
         return Array.from(this.Transactions.values());
+    }
+
+    /**
+     * Creates a new transaction in this collection
+     * @param transaction Transaction data
+     */
+    public async CreateNew(transaction_data: RawTransaction): Promise<Transaction> {
+        let transaction = await TransactionRepository.CreateNewTransaction(this.Wallet, transaction_data);
+        this.Transactions.set(transaction.Id, transaction);
+        return transaction;
     }
 }

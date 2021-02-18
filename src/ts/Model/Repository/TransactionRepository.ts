@@ -3,12 +3,16 @@ import HttpResponse from '../../Network/HttpResponse';
 import MalformedResponseException from '../../Network/MalformedResponseException';
 import NetworkErrorException from '../../Network/NetworkErrorException';
 import RequestFailedException from '../../Network/RequestFailedException';
+import { RequestMethod } from '../../Network/RequestMethod';
+import DateTime from '../../Utils/Date';
+import RawTransaction from '../RawTransaction';
 import Transaction from '../Transaction';
 import TransactionCategory from '../TransactionCategory';
 import { TransactionType } from '../TransactionType';
 import Wallet from '../Wallet';
 import Endpoints from './Endpoints';
 import RepositoryFetchException from './RepositoryFetchException';
+import RepositorySaveException from './RepositorySaveException';
 
 type ApiResponseTransactionCategory = {
     description: string | null;
@@ -38,29 +42,13 @@ export default class TransactionRepository {
         try {
             response = await Http.Request(Endpoints.GetTransactionsUri(wallet.Id));
         } catch(e) {
-            throw this.ProcessException(e);
+            throw this.ProcessFetchException(e);
         }
         let api_transactions = response.Response as ApiResponseTransaction[];
 
         let transactions: Transaction[] = [];
         for(let t of api_transactions) {
-            let category = new TransactionCategory(
-                BigInt(t.category.id),
-                t.category.name,
-                t.category.description ?? '',
-                t.category.transactionType as TransactionType
-            );
-
-            transactions.push(new Transaction(
-                BigInt(t.id),
-                t.name,
-                t.description,
-                BigInt(t.price * 100),    // Price is stored in base units
-                new Date(t.dateOfPurchase),
-                category,
-                t.isFinished,
-                (t.transactionIdReference !== null) ? BigInt(t.transactionIdReference) : null
-            ));
+            transactions.push(this.CreateTransactionFromApi(t));
         }
 
         return transactions;
@@ -76,10 +64,13 @@ export default class TransactionRepository {
         try {
             response = await Http.Request(Endpoints.GetTransactionUri(id, wallet.Id));
         } catch(e) {
-            throw this.ProcessException(e);
+            throw this.ProcessFetchException(e);
         }
         let api_transaction = response.Response as ApiResponseTransaction;
+        return this.CreateTransactionFromApi(api_transaction);
+    }
 
+    protected static CreateTransactionFromApi(api_transaction: ApiResponseTransaction): Transaction {
         let category = new TransactionCategory(
             BigInt(api_transaction.category.id),
             api_transaction.category.name,
@@ -96,11 +87,42 @@ export default class TransactionRepository {
             api_transaction.isFinished,
             (api_transaction.transactionIdReference !== null) ? BigInt(api_transaction.transactionIdReference) : null
         );
-
         return transaction;
     }
 
-    protected static ProcessException(e: any): RepositoryFetchException {
+    public static async CreateNewTransaction(wallet: Wallet, transaction: RawTransaction): Promise<Transaction> {
+        let payload = {
+            dateOfPurchase: DateTime.ToInputFormat(transaction.DateTime),
+            description: transaction.Description,
+            name: transaction.Name,
+            price: Number(transaction.Price) / 100,
+            transactionIdReference: null
+        };
+
+        let response: HttpResponse;
+        try {
+            response = await Http.Request(
+                Endpoints.GetCreateTransactionUri(wallet.Id, transaction.CategoryId),
+                {
+                    Method: RequestMethod.PUT,
+                    Payload: payload
+                }
+            );
+        } catch(e) {
+            throw this.ProcessSaveException(e);
+        }
+
+        if(response.Status !== 201) {
+            throw new RepositorySaveException(
+                `An unexpected response encountered during the transaction saving. ` +
+                `The server responded with HTTP code ${response.Status}. Expected 201.`);
+        }
+
+        let api_transaction = response.Response as ApiResponseTransaction;
+        return this.CreateTransactionFromApi(api_transaction);
+    }
+
+    protected static ProcessFetchException(e: any): RepositoryFetchException {
         if(e instanceof RequestFailedException) {
             return new RepositoryFetchException(
                 `Unable to download the transaction list. HTTP error ${e.ResponseData.Status}.`, e);
@@ -114,6 +136,23 @@ export default class TransactionRepository {
                 `Unable to download the transaction list. The server response is malformed.`, e);
         }
         return new RepositoryFetchException(
-            `Unable to download the transaction list. An unknown error occured.`, e);
+            `Unable to download the transaction list. An unknown error occured.`);
+    }
+
+    protected static ProcessSaveException(e: any): RepositorySaveException {
+        if(e instanceof RequestFailedException) {
+            return new RepositorySaveException(
+                `Unable to save the transaction to the server. HTTP error ${e.ResponseData.Status}`, e);
+        }
+        if(e instanceof NetworkErrorException) {
+            return new RepositorySaveException(
+                `Unable to upload the transaction to the server. Client is offline.`, e);
+        }
+        if(e instanceof MalformedResponseException) {
+            return new RepositorySaveException(
+                `There was an error during the transaction saving. Cannot understand the server response.`, e);
+        }
+        return new RepositorySaveException(
+            `Unable to save the transaction to the server. An unknown error occurred.`);
     }
 }
