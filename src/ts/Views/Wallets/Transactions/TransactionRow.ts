@@ -1,4 +1,5 @@
 import Currency from '../../../Utils/Currency';
+import DateTime from '../../../Utils/DateTime';
 import ListViewItem from '../../Common/ListViewItem';
 import TransactionDto from '../TransactionDto';
 
@@ -26,7 +27,7 @@ export default class TransactionRow extends ListViewItem {
 
         let date = document.createElement('span');
         date.classList.add('date');
-        date.textContent = transaction.DateTime.toLocaleString();
+        date.textContent = DateTime.ToStandardString(transaction.DateTime);
 
         if(transaction.Price > 0 && transaction.IsExpense == true) transaction.Price *= BigInt(-1);
         if(transaction.Price < 0 && transaction.IsExpense == false) transaction.Price *= BigInt(-1);
