@@ -3,13 +3,15 @@ import { ComponentState } from '../Common/ComponentState';
 import Page from '../Presentation/Page';
 import WalletDto from './WalletDto';
 import WalletListPane from './WalletList/WalletListPane';
-import WalletListItem from './WalletList/WalletListItem';
 import WalletTransactions from './Transactions/WalletTransactions';
 import TransactionDto from './TransactionDto';
 import LoadingWrapper from '../Common/LoadingWrapper';
 import LoadingCircle from '../Common/LoadingCircle';
 
-export default class WalletsPage extends Component<'WalletSelectionChanged'> implements Page {
+type WalletsPageEvents = WalletTransactionsEvents | 'WalletSelectionChanged';
+type WalletTransactionsEvents = 'AddTransactionRequested' | 'EditTransactionRequested';
+
+export default class WalletsPage extends Component<WalletsPageEvents> implements Page {
     protected WalletListPane: WalletListPane;
     protected WalletTransactionsPane: WalletTransactions;
 
@@ -18,6 +20,12 @@ export default class WalletsPage extends Component<'WalletSelectionChanged'> imp
 
         this.WalletTransactionsPane = new WalletTransactions();
         this.WalletTransactionsPane.DisplayLoadingIndicator();
+
+        let events_to_forward: WalletTransactionsEvents[] = ['AddTransactionRequested', 'EditTransactionRequested'];
+        for(let e of events_to_forward) {
+            this.WalletTransactionsPane.AddEventListener(e, (() => this.FireEvent(e)).bind(this));
+        }
+
         this.WalletListPane = new WalletListPane();
         this.WalletListPane.AddEventListener('SelectionChanged', this.OnWalletSelectionChanged.bind(this));
     }

@@ -7,7 +7,9 @@ import TransactionRow from './TransactionRow';
 import WalletName from './WalletName';
 import WalletOperations from './WalletOperations';
 
-export default class WalletTransactions extends Component {
+type WalletTransactionsEvents = 'AddTransactionRequested' | 'EditTransactionRequested';
+
+export default class WalletTransactions extends Component<WalletTransactionsEvents> {
     protected WalletName: WalletName;
     protected WalletOperations: WalletOperations;
     protected TransactionsTable: ListView<TransactionRow>;
@@ -18,6 +20,11 @@ export default class WalletTransactions extends Component {
         this.WalletName = new WalletName('[Wallet name]');
         this.WalletOperations = new WalletOperations();
         this.TransactionsTable = new ListView();
+
+        let events_to_forward: WalletTransactionsEvents[] = ['AddTransactionRequested', 'EditTransactionRequested'];
+        for(let e of events_to_forward) {
+            this.WalletOperations.AddEventListener(e, (() => this.FireEvent(e)).bind(this));
+        }
 
         this.TransactionsTable.AddEventListener('SelectionChanged', this.OnTransactionSelectionChange.bind(this));
     }

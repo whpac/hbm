@@ -1,10 +1,11 @@
-import { DropdownDirection } from '../../Common/MenuStrip/DropdownDirection';
 import MenuButton from '../../Common/MenuStrip/MenuButton';
 import MenuSeparator from '../../Common/MenuStrip/MenuSeparator';
 import MenuStrip from '../../Common/MenuStrip/MenuStrip';
 import SubMenu from '../../Common/MenuStrip/SubMenu';
 
-export default class WalletOperations extends MenuStrip {
+type WalletOperationsEvents = 'AddTransactionRequested' | 'EditTransactionRequested';
+
+export default class WalletOperations extends MenuStrip<WalletOperationsEvents> {
     protected AddButton: MenuButton;
     protected EditButton: MenuButton;
     protected RemoveButton: MenuButton;
@@ -28,6 +29,9 @@ export default class WalletOperations extends MenuStrip {
         this.AddSecondaryMenuItem(wallet_submenu);
 
         this.SetIsAnyTransactionSelected(false);
+
+        this.AddButton.AddEventListener('Click', (() => this.FireEvent('AddTransactionRequested')).bind(this));
+        this.EditButton.AddEventListener('Click', (() => this.FireEvent('EditTransactionRequested')).bind(this));
     }
 
     /**
