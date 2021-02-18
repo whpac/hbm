@@ -1,6 +1,6 @@
 import TransactionCategory from '../../../Model/TransactionCategory';
 import { TransactionType } from '../../../Model/TransactionType';
-import DateTime from '../../../Utils/Date';
+import DateTime from '../../../Utils/DateTime';
 import Dialog from '../../Common/Dialog/Dialog';
 import DialogButton from '../../Common/Dialog/DialogButton';
 import TransactionDto from '../TransactionDto';

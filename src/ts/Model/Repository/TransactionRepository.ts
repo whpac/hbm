@@ -4,7 +4,7 @@ import MalformedResponseException from '../../Network/MalformedResponseException
 import NetworkErrorException from '../../Network/NetworkErrorException';
 import RequestFailedException from '../../Network/RequestFailedException';
 import { RequestMethod } from '../../Network/RequestMethod';
-import DateTime from '../../Utils/Date';
+import DateTime from '../../Utils/DateTime';
 import RawTransaction from '../RawTransaction';
 import Transaction from '../Transaction';
 import TransactionCategory from '../TransactionCategory';
