@@ -1,6 +1,7 @@
+import ComponentEvent from './ComponentEvent';
 import { ComponentState } from './ComponentState';
 
-type EventHandler = (sender: Component<string>, data: any) => void;
+type EventHandler = (sender: Component<string>, data: ComponentEvent) => void;
 type BasicComponentEvents = 'StateChanged';
 
 export default abstract class Component<Events extends string = ""> {
@@ -46,7 +47,7 @@ export default abstract class Component<Events extends string = ""> {
         let handlers = this.EventListeners.get(event_name) ?? [];
         for(let handler of handlers) {
             if(typeof handler !== 'function') continue;
-            handler(this, data);
+            handler(this, new ComponentEvent(event_name, data));
         }
     }
 
