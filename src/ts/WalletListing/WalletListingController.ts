@@ -2,6 +2,8 @@ import Command from '../Dispatcher/Command';
 import RequestExecutor from '../Dispatcher/RequestExecutor';
 import Wallet from '../Model/Wallet';
 import WalletCollection from '../Model/WalletCollection';
+import Component from '../Views/Common/Component';
+import ComponentEvent from '../Views/Common/ComponentEvent';
 import DialogPresenter from '../Views/Presentation/DialogPresenter';
 import PagePresenter from '../Views/Presentation/PagePresenter';
 import EditTransactionDialog from '../Views/Wallets/EditTransactionDialog/EditTransactionDialog';
@@ -12,13 +14,14 @@ import WalletsPage from '../Views/Wallets/WalletsPage';
 export default class WalletListingController implements RequestExecutor {
     protected WalletsPage: WalletsPage | undefined;
     protected WalletCollection: WalletCollection | undefined;
+    protected CurrentWallet: Wallet | undefined;
 
     async Execute(command: Command): Promise<void> {
         this.WalletsPage = new WalletsPage();
         this.WalletsPage.AddEventListener('WalletSelectionChanged', this.DisplayWalletRequested.bind(this));
+        this.WalletsPage.AddEventListener('EditTransactionRequested', this.EditTransactionRequested.bind(this));
+        this.WalletsPage.AddEventListener('AddTransactionRequested', this.NewTransactionRequested.bind(this));
         let page_awaiter = PagePresenter.DisplayPage(this.WalletsPage);
-
-        this.DisplayEditTransactionDialog();
 
         this.WalletCollection = await WalletCollection.GetCollection();
         let wallets = this.WalletCollection.GetAllWallets();
@@ -64,11 +67,50 @@ export default class WalletListingController implements RequestExecutor {
             }
         }
 
+        this.CurrentWallet = wallet;
         this.WalletsPage?.DisplayWalletTransactions(wallet_dto, transaction_dtos);
     }
 
-    protected DisplayEditTransactionDialog() {
+    protected EditTransactionRequested() {
+        let transaction_dto = this.WalletsPage?.GetSelectedTransaction();
+        if(transaction_dto === undefined) return;
+
+        this.DisplayEditTransactionDialog(transaction_dto);
+    }
+
+    protected NewTransactionRequested() {
+        this.DisplayEditTransactionDialog(undefined);
+    }
+
+    protected DisplayEditTransactionDialog(transaction: TransactionDto | undefined) {
         let dialog = new EditTransactionDialog();
+        dialog.Populate(transaction);
+        dialog.AddEventListener(
+            'SaveRequested',
+            ((d: Component, e: ComponentEvent) =>
+                this.SaveTransaction(d as EditTransactionDialog, e.Data)).bind(this)
+        );
         DialogPresenter.DisplayDialog(dialog);
+    }
+
+    protected async SaveTransaction(dialog: EditTransactionDialog, transaction_dto: TransactionDto) {
+        if(this.CurrentWallet === undefined) return;
+        let transactions = await this.CurrentWallet.GetTransactions();
+
+        if(transaction_dto.Id === undefined) {
+            try {
+                await transactions.CreateNew(transaction_dto);
+                this.DisplayWalletRequested();  // Refresh the wallet view
+                dialog.Hide();
+            } catch(e) {
+
+            }
+        } else {
+            try {
+
+            } catch(e) {
+
+            }
+        }
     }
 }
