@@ -4,9 +4,18 @@ import TransactionRepository from './Repository/TransactionRepository';
 import Transaction from './Transaction';
 import Wallet from './Wallet';
 
+type EventNames = 'TransactionAdded';
+type EventHandler = (sender: TransactionCollection, event_data: TransactionCollectionEventData) => void;
+export type TransactionCollectionEventData = {
+    EventName: EventNames;
+    Transaction: Transaction;
+};
+
 export default class TransactionCollection {
     protected Transactions: Map<bigint, Transaction>;
     protected Wallet: Wallet;
+
+    protected EventHandlers: Map<EventNames, EventHandler[]>;
 
     /**
      * Creates a transaction collection for a given wallet.
@@ -21,6 +30,7 @@ export default class TransactionCollection {
     protected constructor(transactions: Transaction[], wallet: Wallet) {
         this.Transactions = new Map();
         this.Wallet = wallet;
+        this.EventHandlers = new Map();
 
         for(let transaction of transactions) {
             this.Transactions.set(transaction.Id, transaction);
@@ -64,6 +74,35 @@ export default class TransactionCollection {
     public async CreateNew(transaction_data: RawTransaction): Promise<Transaction> {
         let transaction = await TransactionRepository.CreateNewTransaction(this.Wallet, transaction_data);
         this.Transactions.set(transaction.Id, transaction);
+        this.FireEvent('TransactionAdded', transaction);
         return transaction;
+    }
+
+    /**
+     * Registers an event handler
+     * @param event_name Name of an event to handle
+     * @param handler The event handler
+     */
+    public AddEventListener(event_name: EventNames, handler: EventHandler) {
+        if(!this.EventHandlers.has(event_name)) {
+            this.EventHandlers.set(event_name, []);
+        }
+        let handlers = this.EventHandlers.get(event_name);
+        handlers?.push(handler);
+    }
+
+    /**
+     * Fires an event
+     * @param event_name The name of the event to fire
+     * @param transaction The transaction that caused the event
+     */
+    protected FireEvent(event_name: EventNames, transaction: Transaction) {
+        let handlers = this.EventHandlers.get(event_name) ?? [];
+        for(let handler of handlers) {
+            handler(this, {
+                EventName: event_name,
+                Transaction: transaction
+            });
+        }
     }
 }
