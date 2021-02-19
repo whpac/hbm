@@ -10,13 +10,13 @@ export default class WalletListItem<TEvent extends string = ""> extends ListView
         let children = [];
         let span_name = document.createElement('span');
         span_name.classList.add('name');
-        span_name.textContent = wallet.Name;
+        wallet.Bind('Name', (name) => span_name.textContent = name);
         children.push(span_name);
 
         let span_balance = document.createElement('span');
         span_balance.classList.add('balance');
         if(wallet.Balance < 0) span_balance.classList.add('negative');
-        span_balance.textContent = Currency.Format(wallet.Balance);
+        wallet.Bind('Balance', (balance) => span_balance.textContent = Currency.Format(balance));
         children.push(span_balance);
 
         if(wallet.IsDefault) {

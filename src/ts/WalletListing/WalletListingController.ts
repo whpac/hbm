@@ -28,12 +28,7 @@ export default class WalletListingController implements RequestExecutor {
 
         let wallet_dtos: WalletDto[] = [];
         for(let wallet of wallets) {
-            let dto = new WalletDto(
-                wallet.Id,
-                wallet.Name,
-                wallet.Balance,
-                wallet.Balance > 0
-            );
+            let dto = new WalletDto(wallet);
 
             if(dto.IsDefault) wallet_dtos.unshift(dto);
             else wallet_dtos.push(dto);
