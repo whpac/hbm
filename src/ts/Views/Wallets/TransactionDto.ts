@@ -18,21 +18,6 @@ export default class TransactionDto {
         this.CategoryId = category.Id;
         this.CategoryName = category.Name;
         this.CategoryDescription = category.Description;
-
-        switch(category.Type) {
-            case TransactionType.EXPENSE:
-            case TransactionType.LOAN:
-            case TransactionType.BORROW_BACK:
-                this.IsExpense = true;
-                break;
-            case TransactionType.REVENUES:
-            case TransactionType.BORROW:
-            case TransactionType.LOAN_BACK:
-                this.IsExpense = false;
-                break;
-            default:
-                this.IsExpense = true;
-                break;
-        }
+        this.IsExpense = category.IsExpense;
     }
 }
