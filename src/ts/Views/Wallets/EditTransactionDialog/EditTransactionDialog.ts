@@ -11,6 +11,8 @@ export default class EditTransactionDialog extends Dialog<'SaveRequested'> {
     protected DescriptionInput: HTMLTextAreaElement;
     protected MoneyInput: HTMLInputElement;
     protected DateInput: HTMLInputElement;
+    protected DiscardButton: DialogButton;
+    protected SaveButton: DialogButton;
 
     public constructor() {
         super();
@@ -58,15 +60,19 @@ export default class EditTransactionDialog extends Dialog<'SaveRequested'> {
         grid_form.appendChild(date_label);
         grid_form.appendChild(this.DateInput);
 
-        let discard_button = new DialogButton('Discard');
-        discard_button.AddEventListener('Click', this.Hide.bind(this));
-        this.AddButton(discard_button);
+        this.DiscardButton = new DialogButton('Discard');
+        this.DiscardButton.AddEventListener('Click', this.Hide.bind(this));
+        this.AddButton(this.DiscardButton);
 
-        let save_button = new DialogButton('Save', true);
-        save_button.AddEventListener('Click', this.OnSaveRequested.bind(this));
-        this.AddButton(save_button);
+        this.SaveButton = new DialogButton('Save', true);
+        this.SaveButton.AddEventListener('Click', this.OnSaveRequested.bind(this));
+        this.AddButton(this.SaveButton);
     }
 
+    /**
+     * Populates the dialog with the transaction data
+     * @param transaction The transaction
+     */
     public Populate(transaction: TransactionDto | undefined) {
         this.TransactionId = transaction?.Id;
         this.NameInput.value = transaction?.Name ?? '';
@@ -81,11 +87,27 @@ export default class EditTransactionDialog extends Dialog<'SaveRequested'> {
             this.DateInput.value = DateTime.ToInputFormat(new Date());
             this.SetTitle('New transaction');
         }
+        this.DiscardButton.Enabled = true;
+        this.SaveButton.Enabled = true;
+        this.IsCloseButtonEnabled = true;
+    }
 
+    /**
+     * Re-enables the dialog buttons to indicate that the user has to do something
+     */
+    public OnSaveFailed() {
+        this.DiscardButton.Enabled = true;
+        this.SaveButton.Enabled = true;
+        this.IsCloseButtonEnabled = true;
     }
 
     protected OnSaveRequested() {
         if(!this.Validate()) return;
+
+        this.DiscardButton.Enabled = false;
+        this.SaveButton.Enabled = false;
+        this.IsCloseButtonEnabled = false;
+
         this.FireEvent('SaveRequested', new TransactionDto(
             this.TransactionId,
             this.NameInput.value,

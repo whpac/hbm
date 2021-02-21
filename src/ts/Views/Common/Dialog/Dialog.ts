@@ -11,6 +11,15 @@ export default class Dialog<TEvent extends string = ""> extends Component<TEvent
     private ButtonsWrapper: HTMLElement;
     private _IsCloseButtonVisible: boolean = true;
 
+    /** Gets or sets whether the close button is enabled */
+    protected get IsCloseButtonEnabled() {
+        return !this.CloseButton.disabled;
+    }
+    protected set IsCloseButtonEnabled(value: boolean) {
+        this.CloseButton.disabled = !value;
+    }
+
+    /** Gets or sets whether the close button is visible */
     protected get IsCloseButtonVisible() {
         return this._IsCloseButtonVisible;
     }

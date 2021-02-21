@@ -11,6 +11,14 @@ export default class DialogButton extends Component<'Click'> {
         this.ButtonElement.textContent = value;
     }
 
+    /** Gets or sets whether the button is enabled */
+    public get Enabled() {
+        return !this.ButtonElement.disabled;
+    }
+    public set Enabled(value: boolean) {
+        this.ButtonElement.disabled = !value;
+    }
+
     public constructor(caption: string, is_primary: boolean = false) {
         super();
 

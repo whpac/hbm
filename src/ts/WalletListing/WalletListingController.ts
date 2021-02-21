@@ -91,6 +91,7 @@ export default class WalletListingController implements RequestExecutor {
                 this.DisplayWalletRequested();  // Refresh the wallet view
                 dialog.Hide();
             } catch(e) {
+                dialog.OnSaveFailed();
                 // TODO: Handle exception
             }
         } else {
@@ -99,6 +100,7 @@ export default class WalletListingController implements RequestExecutor {
                 await transaction.MakeChanges(transaction_dto);
                 dialog.Hide();
             } catch(e) {
+                dialog.OnSaveFailed();
                 // TODO: Handle exception
             }
         }
