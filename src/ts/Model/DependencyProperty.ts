@@ -24,7 +24,9 @@ export default class DependencyProperty<T> {
         let old_value = this.Value;
         this.Value = value;
 
-        this.FireChange(value, old_value);
+        if(value !== old_value) {
+            this.FireChange(value, old_value);
+        }
     }
 
     /**
