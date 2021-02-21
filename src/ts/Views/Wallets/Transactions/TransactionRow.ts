@@ -14,7 +14,7 @@ export default class TransactionRow extends ListViewItem {
     public constructor(transaction: TransactionDto) {
         let name = document.createElement('span');
         name.classList.add('name');
-        name.textContent = transaction.Name;
+        transaction.Bind('Name', (n) => name.textContent = n);
 
         let dot = document.createElement('span');
         dot.classList.add('dot');
@@ -27,24 +27,26 @@ export default class TransactionRow extends ListViewItem {
 
         let date = document.createElement('span');
         date.classList.add('date');
-        date.textContent = DateTime.ToStandardString(transaction.DateTime);
+        transaction.Bind('DateTime', (date_time) => date.textContent = DateTime.ToStandardString(date_time));
 
         if(transaction.Price > 0 && transaction.IsExpense == true) transaction.Price *= BigInt(-1);
         if(transaction.Price < 0 && transaction.IsExpense == false) transaction.Price *= BigInt(-1);
 
         let money = document.createElement('span');
         money.classList.add('money');
-        money.textContent = Currency.Format(transaction.Price);
+        transaction.Bind('Price', (price) => money.textContent = Currency.Format(price));
 
         let desc = document.createElement('div');
         desc.classList.add('description');
-        if(transaction.Description != '') {
-            desc.classList.remove('empty');
-            desc.textContent = transaction.Description;
-        } else {
-            desc.classList.add('empty');
-            desc.textContent = 'No description provided.';
-        }
+        transaction.Bind('Description', (description) => {
+            if(description != '') {
+                desc.classList.remove('empty');
+                desc.textContent = description;
+            } else {
+                desc.classList.add('empty');
+                desc.textContent = 'No description provided.';
+            }
+        });
 
         super([name, dot, type, date, money, desc]);
 

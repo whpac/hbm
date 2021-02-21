@@ -48,7 +48,7 @@ export default class TransactionRepository {
 
         let transactions: Transaction[] = [];
         for(let t of api_transactions) {
-            transactions.push(this.CreateTransactionFromApi(t));
+            transactions.push(this.CreateTransactionFromApi(t, wallet));
         }
 
         return transactions;
@@ -67,10 +67,10 @@ export default class TransactionRepository {
             throw this.ProcessFetchException(e);
         }
         let api_transaction = response.Response as ApiResponseTransaction;
-        return this.CreateTransactionFromApi(api_transaction);
+        return this.CreateTransactionFromApi(api_transaction, wallet);
     }
 
-    protected static CreateTransactionFromApi(api_transaction: ApiResponseTransaction): Transaction {
+    protected static CreateTransactionFromApi(api_transaction: ApiResponseTransaction, wallet: Wallet): Transaction {
         let category = new TransactionCategory(
             BigInt(api_transaction.category.id),
             api_transaction.category.name,
@@ -85,7 +85,8 @@ export default class TransactionRepository {
             new Date(api_transaction.dateOfPurchase),
             category,
             api_transaction.isFinished,
-            (api_transaction.transactionIdReference !== null) ? BigInt(api_transaction.transactionIdReference) : null
+            (api_transaction.transactionIdReference !== null) ? BigInt(api_transaction.transactionIdReference) : null,
+            wallet
         );
         return transaction;
     }
@@ -119,7 +120,38 @@ export default class TransactionRepository {
         }
 
         let api_transaction = response.Response as ApiResponseTransaction;
-        return this.CreateTransactionFromApi(api_transaction);
+        return this.CreateTransactionFromApi(api_transaction, wallet);
+    }
+
+    public static async EditTransaction(wallet: Wallet, transaction: RawTransaction): Promise<void> {
+        let payload = {
+            id: transaction.Id?.toString() ?? null,
+            dateOfPurchase: DateTime.ToInputFormat(transaction.DateTime),
+            description: transaction.Description,
+            name: transaction.Name,
+            price: Number(transaction.Price) / 100,
+            transactionIdReference: null
+        };
+
+        let response: HttpResponse;
+        try {
+            response = await Http.Request(
+                Endpoints.GetEditTransactionUri(wallet.Id),
+                {
+                    Method: RequestMethod.POST,
+                    Payload: payload
+                }
+            );
+        } catch(e) {
+            console.log(e);
+            throw this.ProcessSaveException(e);
+        }
+
+        if(response.Status !== 202) {
+            throw new RepositorySaveException(
+                `An unexpected response encountered during the transaction saving. ` +
+                `The server responded with HTTP code ${response.Status}. Expected 202.`);
+        }
     }
 
     protected static ProcessFetchException(e: any): RepositoryFetchException {

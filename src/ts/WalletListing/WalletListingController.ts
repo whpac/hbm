@@ -51,14 +51,7 @@ export default class WalletListingController implements RequestExecutor {
             let transactions = await wallet.GetTransactions();
 
             for(let transaction of transactions.GetAllTransactions()) {
-                transaction_dtos.push(new TransactionDto(
-                    transaction.Id,
-                    transaction.Name,
-                    transaction.Description,
-                    transaction.Price,
-                    transaction.DateTime,
-                    transaction.Category
-                ));
+                transaction_dtos.push(new TransactionDto(transaction));
             }
         }
 
@@ -98,13 +91,15 @@ export default class WalletListingController implements RequestExecutor {
                 this.DisplayWalletRequested();  // Refresh the wallet view
                 dialog.Hide();
             } catch(e) {
-
+                // TODO: Handle exception
             }
         } else {
             try {
-
+                let transaction = await transactions.GetTransactionById(transaction_dto.Id);
+                await transaction.MakeChanges(transaction_dto);
+                dialog.Hide();
             } catch(e) {
-
+                // TODO: Handle exception
             }
         }
     }

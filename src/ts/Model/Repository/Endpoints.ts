@@ -23,4 +23,8 @@ export default class Endpoints {
     public static GetCreateTransactionUri(wallet_id: bigint, category_id: bigint): string {
         return this.GetWalletUri(wallet_id) + `/category/${category_id}/transaction/add`;
     }
+
+    public static GetEditTransactionUri(wallet_id: bigint): string {
+        return this.GetWalletUri(wallet_id) + `/transaction/edit`;
+    }
 }
