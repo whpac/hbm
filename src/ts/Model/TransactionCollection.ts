@@ -68,7 +68,7 @@ export default class TransactionCollection {
     }
 
     /**
-     * Creates a new transaction in this collection
+     * Creates a new transaction in this collection. If fails, throws a RepositorySaveException.
      * @param transaction Transaction data
      */
     public async CreateNew(transaction_data: RawTransaction): Promise<Transaction> {

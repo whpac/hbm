@@ -91,6 +91,11 @@ export default class TransactionRepository {
         return transaction;
     }
 
+    /**
+     * Creates a new transaction. If fails, throws a RepositorySaveException.
+     * @param wallet The wallet to add a transaction to
+     * @param transaction The transaction data
+     */
     public static async CreateNewTransaction(wallet: Wallet, transaction: RawTransaction): Promise<Transaction> {
         let payload = {
             dateOfPurchase: DateTime.ToInputFormat(transaction.DateTime),
@@ -123,6 +128,11 @@ export default class TransactionRepository {
         return this.CreateTransactionFromApi(api_transaction, wallet);
     }
 
+    /**
+     * Saves changes to the exiting transaction. If fails, throws a RepositorySaveException.
+     * @param wallet Wallet the transaction is in
+     * @param transaction The transaction data
+     */
     public static async EditTransaction(wallet: Wallet, transaction: RawTransaction): Promise<void> {
         let payload = {
             id: transaction.Id?.toString() ?? null,

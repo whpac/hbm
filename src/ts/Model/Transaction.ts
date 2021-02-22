@@ -66,6 +66,10 @@ export default class Transaction {
         this._DateTime.AddOnChange((() => this.FireEvent('DateTimeChanged')).bind(this));
     }
 
+    /**
+     * Saves changes to the transaction. If fails throws a RepositorySaveException.
+     * @param transaction_data The new field values
+     */
     public async MakeChanges(transaction_data: RawTransaction) {
         await TransactionRepository.EditTransaction(this.Wallet, transaction_data);
 
