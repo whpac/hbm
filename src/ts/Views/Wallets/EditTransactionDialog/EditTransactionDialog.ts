@@ -13,6 +13,7 @@ export default class EditTransactionDialog extends Dialog<'SaveRequested'> {
     protected DateInput: HTMLInputElement;
     protected DiscardButton: DialogButton;
     protected SaveButton: DialogButton;
+    protected ErrorText: HTMLElement;
 
     public constructor() {
         super();
@@ -60,6 +61,10 @@ export default class EditTransactionDialog extends Dialog<'SaveRequested'> {
         grid_form.appendChild(date_label);
         grid_form.appendChild(this.DateInput);
 
+        this.ErrorText = document.createElement('div');
+        this.ErrorText.classList.add('error');
+        this.AddContent(this.ErrorText);
+
         this.DiscardButton = new DialogButton('Discard');
         this.DiscardButton.AddEventListener('Click', this.Hide.bind(this));
         this.AddButton(this.DiscardButton);
@@ -90,15 +95,17 @@ export default class EditTransactionDialog extends Dialog<'SaveRequested'> {
         this.DiscardButton.Enabled = true;
         this.SaveButton.Enabled = true;
         this.IsCloseButtonEnabled = true;
+        this.ErrorText.textContent = '';
     }
 
     /**
      * Re-enables the dialog buttons to indicate that the user has to do something
      */
-    public OnSaveFailed() {
+    public OnSaveFailed(error_text: string) {
         this.DiscardButton.Enabled = true;
         this.SaveButton.Enabled = true;
         this.IsCloseButtonEnabled = true;
+        this.ErrorText.textContent = error_text;
     }
 
     protected OnSaveRequested() {
@@ -107,6 +114,7 @@ export default class EditTransactionDialog extends Dialog<'SaveRequested'> {
         this.DiscardButton.Enabled = false;
         this.SaveButton.Enabled = false;
         this.IsCloseButtonEnabled = false;
+        this.ErrorText.textContent = '';
 
         this.FireEvent('SaveRequested', new TransactionDto(
             this.TransactionId,

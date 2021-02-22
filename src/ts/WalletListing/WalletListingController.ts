@@ -1,5 +1,6 @@
 import Command from '../Dispatcher/Command';
 import RequestExecutor from '../Dispatcher/RequestExecutor';
+import RepositorySaveException from '../Model/Repository/RepositorySaveException';
 import Wallet from '../Model/Wallet';
 import WalletCollection from '../Model/WalletCollection';
 import Component from '../Views/Common/Component';
@@ -91,8 +92,11 @@ export default class WalletListingController implements RequestExecutor {
                 this.DisplayWalletRequested();  // Refresh the wallet view
                 dialog.Hide();
             } catch(e) {
-                dialog.OnSaveFailed();
-                // TODO: Handle exception
+                if(e instanceof RepositorySaveException) {
+                    dialog.OnSaveFailed(e.Message);
+                } else {
+                    dialog.OnSaveFailed('An unknown error occurred.');
+                }
             }
         } else {
             try {
@@ -100,8 +104,11 @@ export default class WalletListingController implements RequestExecutor {
                 await transaction.MakeChanges(transaction_dto);
                 dialog.Hide();
             } catch(e) {
-                dialog.OnSaveFailed();
-                // TODO: Handle exception
+                if(e instanceof RepositorySaveException) {
+                    dialog.OnSaveFailed(e.Message);
+                } else {
+                    dialog.OnSaveFailed('An unknown error occurred.');
+                }
             }
         }
     }

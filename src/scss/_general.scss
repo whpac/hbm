@@ -10,6 +10,12 @@ ion-icon {pointer-events:none;}
     border-radius:0; margin:0; padding:0; width:100%; color:inherit;
 }
 
+.error {
+    color:#b71c1c; font-size:0.85em;
+
+    &:not(:empty) {margin-top:8px; margin-bottom:-8px;}
+}
+
 @import "common_controls/list_view";
 @import "common_controls/loading_wheel";
 @import "common_controls/menu_strip";
