@@ -164,6 +164,31 @@ export default class TransactionRepository {
         }
     }
 
+    public static async RemoveTransaction(wallet: Wallet, transaction: { Id: bigint | undefined; }) {
+        if(transaction.Id === undefined) {
+            throw new RepositorySaveException(`Cannot remove a transaction with an undefined identifier.`);
+        }
+
+        let response: HttpResponse;
+        try {
+            response = await Http.Request(
+                Endpoints.GetRemoveTransactionUri(wallet.Id, transaction.Id),
+                {
+                    Method: RequestMethod.DELETE
+                }
+            );
+        } catch(e) {
+            console.log(e);
+            throw this.ProcessSaveException(e);
+        }
+
+        if(response.Status !== 204) {
+            throw new RepositorySaveException(
+                `An unexpected response encountered during the transaction saving. ` +
+                `The server responded with HTTP code ${response.Status}. Expected 204.`);
+        }
+    }
+
     protected static ProcessFetchException(e: any): RepositoryFetchException {
         if(e instanceof RequestFailedException) {
             return new RepositoryFetchException(

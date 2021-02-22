@@ -4,7 +4,7 @@ import TransactionRepository from './Repository/TransactionRepository';
 import Transaction from './Transaction';
 import Wallet from './Wallet';
 
-type EventNames = 'TransactionAdded';
+type EventNames = 'TransactionAdded' | 'TransactionRemoved';
 type EventHandler = (sender: TransactionCollection, event_data: TransactionCollectionEventData) => void;
 export type TransactionCollectionEventData = {
     EventName: EventNames;
@@ -33,6 +33,7 @@ export default class TransactionCollection {
         this.EventHandlers = new Map();
 
         for(let transaction of transactions) {
+            transaction.AddEventListener('Removed', this.OnTransactionRemoved.bind(this));
             this.Transactions.set(transaction.Id, transaction);
         }
     }
@@ -50,6 +51,7 @@ export default class TransactionCollection {
         try {
             let transaction = await TransactionRepository.GetTransactionById(id, this.Wallet);
             if(transaction !== undefined) {
+                transaction.AddEventListener('Removed', this.OnTransactionRemoved.bind(this));
                 this.Transactions.set(id, transaction);
                 return transaction;
             }
@@ -73,9 +75,15 @@ export default class TransactionCollection {
      */
     public async CreateNew(transaction_data: RawTransaction): Promise<Transaction> {
         let transaction = await TransactionRepository.CreateNewTransaction(this.Wallet, transaction_data);
+        transaction.AddEventListener('Removed', this.OnTransactionRemoved.bind(this));
         this.Transactions.set(transaction.Id, transaction);
         this.FireEvent('TransactionAdded', transaction);
         return transaction;
+    }
+
+    protected OnTransactionRemoved(transaction: Transaction) {
+        this.Transactions.delete(transaction.Id);
+        this.FireEvent('TransactionRemoved', transaction);
     }
 
     /**

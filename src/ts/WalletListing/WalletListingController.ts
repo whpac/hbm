@@ -8,6 +8,7 @@ import ComponentEvent from '../Views/Common/ComponentEvent';
 import DialogPresenter from '../Views/Presentation/DialogPresenter';
 import PagePresenter from '../Views/Presentation/PagePresenter';
 import EditTransactionDialog from '../Views/Wallets/EditTransactionDialog/EditTransactionDialog';
+import RemoveTransactionDialog from '../Views/Wallets/RemoveTransactionDialog/RemoveTransactionDialog';
 import TransactionDto from '../Views/Wallets/TransactionDto';
 import WalletDto from '../Views/Wallets/WalletDto';
 import WalletsPage from '../Views/Wallets/WalletsPage';
@@ -22,6 +23,7 @@ export default class WalletListingController implements RequestExecutor {
         this.WalletsPage.AddEventListener('WalletSelectionChanged', this.DisplayWalletRequested.bind(this));
         this.WalletsPage.AddEventListener('EditTransactionRequested', this.EditTransactionRequested.bind(this));
         this.WalletsPage.AddEventListener('AddTransactionRequested', this.NewTransactionRequested.bind(this));
+        this.WalletsPage.AddEventListener('RemoveTransactionRequested', this.RemoveTransactionRequested.bind(this));
         let page_awaiter = PagePresenter.DisplayPage(this.WalletsPage);
 
         this.WalletCollection = await WalletCollection.GetCollection();
@@ -71,6 +73,13 @@ export default class WalletListingController implements RequestExecutor {
         this.DisplayEditTransactionDialog(undefined);
     }
 
+    protected RemoveTransactionRequested() {
+        let transaction_dto = this.WalletsPage?.GetSelectedTransaction();
+        if(transaction_dto === undefined) return;
+
+        this.DisplayRemoveTransactionDialog(transaction_dto);
+    }
+
     protected DisplayEditTransactionDialog(transaction: TransactionDto | undefined) {
         let dialog = new EditTransactionDialog();
         dialog.Populate(transaction);
@@ -78,6 +87,17 @@ export default class WalletListingController implements RequestExecutor {
             'SaveRequested',
             ((d: Component, e: ComponentEvent) =>
                 this.SaveTransaction(d as EditTransactionDialog, e.Data)).bind(this)
+        );
+        DialogPresenter.DisplayDialog(dialog);
+    }
+
+    protected DisplayRemoveTransactionDialog(transaction: TransactionDto) {
+        let dialog = new RemoveTransactionDialog();
+        dialog.Populate(transaction);
+        dialog.AddEventListener(
+            'RemoveRequested',
+            ((d: Component, e: ComponentEvent) =>
+                this.RemoveTransaction(d as RemoveTransactionDialog, e.Data)).bind(this)
         );
         DialogPresenter.DisplayDialog(dialog);
     }
@@ -109,6 +129,24 @@ export default class WalletListingController implements RequestExecutor {
                 } else {
                     dialog.OnSaveFailed('An unknown error occurred.');
                 }
+            }
+        }
+    }
+
+    protected async RemoveTransaction(dialog: RemoveTransactionDialog, transaction_dto: TransactionDto) {
+        if(this.CurrentWallet === undefined || transaction_dto.Id === undefined) return;
+        let transactions = await this.CurrentWallet.GetTransactions();
+
+        try {
+            let transaction = await transactions.GetTransactionById(transaction_dto.Id);
+            await transaction.Remove();
+            this.DisplayWalletRequested();  // Refresh the wallet view
+            dialog.Hide();
+        } catch(e) {
+            if(e instanceof RepositorySaveException) {
+                dialog.OnRemoveFailed(e.Message);
+            } else {
+                dialog.OnRemoveFailed('An unknown error occurred.');
             }
         }
     }

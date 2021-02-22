@@ -48,6 +48,7 @@ export default class Wallet {
         if(this.Transactions === undefined) {
             this.Transactions = await TransactionCollection.CreateForWallet(this);
             this.Transactions.AddEventListener('TransactionAdded', this.OnTransactionAdded.bind(this));
+            this.Transactions.AddEventListener('TransactionRemoved', this.OnTransactionRemoved.bind(this));
         }
         return this.Transactions;
     }
@@ -57,6 +58,14 @@ export default class Wallet {
             this._Balance.Set(this.Balance - data.Transaction.Price);
         } else {
             this._Balance.Set(this.Balance + data.Transaction.Price);
+        }
+    }
+
+    protected OnTransactionRemoved(coll: TransactionCollection, data: TransactionCollectionEventData) {
+        if(data.Transaction.Category.IsExpense) {
+            this._Balance.Set(this.Balance + data.Transaction.Price);
+        } else {
+            this._Balance.Set(this.Balance - data.Transaction.Price);
         }
     }
 

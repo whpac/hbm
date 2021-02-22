@@ -27,4 +27,8 @@ export default class Endpoints {
     public static GetEditTransactionUri(wallet_id: bigint): string {
         return this.GetWalletUri(wallet_id) + `/transaction/edit`;
     }
+
+    public static GetRemoveTransactionUri(wallet_id: bigint, transaction_id: bigint): string {
+        return this.GetWalletUri(wallet_id) + `/transaction/remove/${transaction_id}`;
+    }
 }

@@ -4,7 +4,7 @@ import TransactionRepository from './Repository/TransactionRepository';
 import TransactionCategory from './TransactionCategory';
 import Wallet from './Wallet';
 
-type EventNames = 'DateTimeChanged' | 'DescriptionChanged' | 'MoneyChanged' | 'NameChanged';
+type EventNames = 'DateTimeChanged' | 'DescriptionChanged' | 'MoneyChanged' | 'NameChanged' | 'Removed';
 type EventHandler = (sender: Transaction, data: TransactionEventData) => void;
 export type TransactionEventData = {
     EventName: EventNames;
@@ -77,6 +77,15 @@ export default class Transaction {
         this._Description.Set(transaction_data.Description);
         this._Price.Set(transaction_data.Price);
         this._DateTime.Set(transaction_data.DateTime);
+    }
+
+    /**
+     * Removes the transaction
+     */
+    public async Remove() {
+        await TransactionRepository.RemoveTransaction(this.Wallet, this);
+
+        this.FireEvent('Removed');
     }
 
     /**

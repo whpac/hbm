@@ -9,7 +9,7 @@ import LoadingWrapper from '../Common/LoadingWrapper';
 import LoadingCircle from '../Common/LoadingCircle';
 
 type WalletsPageEvents = WalletTransactionsEvents | 'WalletSelectionChanged';
-type WalletTransactionsEvents = 'AddTransactionRequested' | 'EditTransactionRequested';
+type WalletTransactionsEvents = 'AddTransactionRequested' | 'EditTransactionRequested' | 'RemoveTransactionRequested';
 
 export default class WalletsPage extends Component<WalletsPageEvents> implements Page {
     protected WalletListPane: WalletListPane;
@@ -21,7 +21,9 @@ export default class WalletsPage extends Component<WalletsPageEvents> implements
         this.WalletTransactionsPane = new WalletTransactions();
         this.WalletTransactionsPane.DisplayLoadingIndicator();
 
-        let events_to_forward: WalletTransactionsEvents[] = ['AddTransactionRequested', 'EditTransactionRequested'];
+        let events_to_forward: WalletTransactionsEvents[] = [
+            'AddTransactionRequested', 'EditTransactionRequested', 'RemoveTransactionRequested'
+        ];
         for(let e of events_to_forward) {
             this.WalletTransactionsPane.AddEventListener(e, (() => this.FireEvent(e)).bind(this));
         }
