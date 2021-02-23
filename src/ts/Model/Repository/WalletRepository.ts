@@ -3,9 +3,11 @@ import HttpResponse from '../../Network/HttpResponse';
 import MalformedResponseException from '../../Network/MalformedResponseException';
 import NetworkErrorException from '../../Network/NetworkErrorException';
 import RequestFailedException from '../../Network/RequestFailedException';
+import { RequestMethod } from '../../Network/RequestMethod';
 import Wallet from '../Wallet';
 import Endpoints from './Endpoints';
 import RepositoryFetchException from './RepositoryFetchException';
+import RepositorySaveException from './RepositorySaveException';
 
 type ApiResponseWallet = {
     balance: number;
@@ -25,7 +27,7 @@ export default class WalletRepository {
         try {
             response = await Http.Request(Endpoints.GetWalletsUri());
         } catch(e) {
-            throw this.ProcessException(e);
+            throw this.ProcessFetchException(e);
         }
         let api_wallets = response.Response as ApiResponseWallet[];
 
@@ -52,7 +54,7 @@ export default class WalletRepository {
         try {
             response = await Http.Request(Endpoints.GetWalletUri(id));
         } catch(e) {
-            throw this.ProcessException(e);
+            throw this.ProcessFetchException(e);
         }
         let api_wallet = response.Response as ApiResponseWallet;
 
@@ -66,7 +68,40 @@ export default class WalletRepository {
         return wallet;
     }
 
-    protected static ProcessException(e: any): RepositoryFetchException {
+    /**
+     * Renames a wallet. If fails, throws a RepositorySaveException
+     * @param wallet The wallet to rename
+     * @param new_name The new name
+     */
+    public static async RenameWallet(wallet: Wallet, new_name: string) {
+        let payload = {
+            id: wallet.Id.toString(),
+            name: new_name,
+            balance: Number(wallet.Balance) / 100
+        };
+
+        let response: HttpResponse;
+        try {
+            response = await Http.Request(
+                Endpoints.GetEditWalletUri(),
+                {
+                    Method: RequestMethod.POST,
+                    Payload: payload
+                }
+            );
+        } catch(e) {
+            console.log(e);
+            throw this.ProcessSaveException(e);
+        }
+
+        if(response.Status !== 201) {
+            throw new RepositorySaveException(
+                `An unexpected response encountered during the wallet saving. ` +
+                `The server responded with HTTP code ${response.Status}. Expected 201.`);
+        }
+    }
+
+    protected static ProcessFetchException(e: any): RepositoryFetchException {
         if(e instanceof RequestFailedException) {
             return new RepositoryFetchException(
                 `Unable to download the wallet list. HTTP error ${e.ResponseData.Status}.`, e);
@@ -81,5 +116,22 @@ export default class WalletRepository {
         }
         return new RepositoryFetchException(
             `Unable to download the wallet list. An unknown error occured.`, e);
+    }
+
+    protected static ProcessSaveException(e: any): RepositorySaveException {
+        if(e instanceof RequestFailedException) {
+            return new RepositorySaveException(
+                `Unable to save the wallet to the server. HTTP error ${e.ResponseData.Status}`, e);
+        }
+        if(e instanceof NetworkErrorException) {
+            return new RepositorySaveException(
+                `Unable to upload the wallet to the server. Client is offline.`, e);
+        }
+        if(e instanceof MalformedResponseException) {
+            return new RepositorySaveException(
+                `There was an error during the wallet saving. Cannot understand the server response.`, e);
+        }
+        return new RepositorySaveException(
+            `Unable to save the wallet to the server. An unknown error occurred.`);
     }
 }

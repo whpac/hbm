@@ -1,4 +1,5 @@
 import DependencyProperty from './DependencyProperty';
+import WalletRepository from './Repository/WalletRepository';
 import TransactionCollection, { TransactionCollectionEventData } from './TransactionCollection';
 
 type EventNames = 'BalanceChanged' | 'NameChanged';
@@ -51,6 +52,16 @@ export default class Wallet {
             this.Transactions.AddEventListener('TransactionRemoved', this.OnTransactionRemoved.bind(this));
         }
         return this.Transactions;
+    }
+
+    /**
+     * Renames the wallet. If fails, throws a RepositorySaveException
+     * @param new_name The new wallet name
+     */
+    public async Rename(new_name: string) {
+        await WalletRepository.RenameWallet(this, new_name);
+
+        this._Name.Set(new_name);
     }
 
     protected OnTransactionAdded(coll: TransactionCollection, data: TransactionCollectionEventData) {

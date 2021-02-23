@@ -27,8 +27,8 @@ textarea {resize:vertical; font-family:inherit; height:3.8em;}
     display:grid; grid-template-columns:auto 1fr; gap:4px 8px; align-items:center;
 
     label, .label-column {grid-column:1; justify-self:left;}
-    input, .input-column {grid-column:2;}
-    .whole-row {grid-column:1 / span 2;}
+    input, .input-column {grid-column:2;justify-self:stretch;}
+    .whole-row {grid-column:1 / span 2 !important;}
 }
 
 input[type=text], input[type=number], input[type=datetime-local], textarea {

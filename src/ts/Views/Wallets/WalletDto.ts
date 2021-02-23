@@ -11,14 +11,24 @@ export default class WalletDto {
 
     protected Bindings: Map<WalletDtoProperty, BindingFunction<any>[]>;
 
-    public constructor(wallet: Wallet) {
-        this.Id = wallet.Id;
-        this.Name = wallet.Name;
-        this.Balance = wallet.Balance;
-        this.IsDefault = wallet.Balance > 0;
+    public constructor(wallet: Wallet);
+    public constructor(id: bigint, name: string, balance: bigint, is_default: boolean);
+    public constructor(wallet_or_id: Wallet | bigint, name?: string, balance?: bigint, is_default?: boolean) {
+        if(typeof wallet_or_id == 'bigint') {
+            this.Id = wallet_or_id;
+            this.Name = name!;
+            this.Balance = balance!;
+            this.IsDefault = is_default!;
+        } else {
+            this.Id = wallet_or_id.Id;
+            this.Name = wallet_or_id.Name;
+            this.Balance = wallet_or_id.Balance;
+            this.IsDefault = wallet_or_id.Balance > 0;
 
+            wallet_or_id.AddEventListener('BalanceChanged', this.OnWalletChanged.bind(this));
+            wallet_or_id.AddEventListener('NameChanged', this.OnWalletChanged.bind(this));
+        }
         this.Bindings = new Map();
-        wallet.AddEventListener('BalanceChanged', this.OnWalletChanged.bind(this));
     }
 
     public Bind(property: 'Balance', on_set: BindingFunction<bigint>): void;
@@ -38,6 +48,10 @@ export default class WalletDto {
             case 'BalanceChanged':
                 this.Balance = w.Balance;
                 this.ResolveBindings('Balance');
+                break;
+            case 'NameChanged':
+                this.Name = w.Name;
+                this.ResolveBindings('Name');
                 break;
         }
     }
