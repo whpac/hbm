@@ -31,7 +31,14 @@ export default class WalletListingController implements RequestExecutor {
         let page_awaiter = PagePresenter.DisplayPage(this.WalletsPage);
 
         this.WalletCollection = await WalletCollection.GetCollection();
-        let wallets = this.WalletCollection.GetAllWallets();
+        this.WalletCollection.AddEventListener('WalletRemoved', this.DisplayWalletList.bind(this));
+        this.DisplayWalletList();
+
+        await page_awaiter;
+    }
+
+    protected DisplayWalletList() {
+        let wallets = this.WalletCollection!.GetAllWallets();
 
         let wallet_dtos: WalletDto[] = [];
         for(let wallet of wallets) {
@@ -41,8 +48,7 @@ export default class WalletListingController implements RequestExecutor {
             else wallet_dtos.push(dto);
         }
 
-        this.WalletsPage.PopulateWallets(wallet_dtos);
-        await page_awaiter;
+        this.WalletsPage!.PopulateWallets(wallet_dtos);
     }
 
     protected async DisplayWalletRequested() {

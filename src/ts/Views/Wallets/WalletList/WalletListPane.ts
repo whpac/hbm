@@ -32,6 +32,7 @@ export default class WalletListPane extends Component<'SelectionChanged'>{
     }
 
     public PopulateWallets(wallets: WalletDto[]) {
+        this.WalletsList.RemoveAllItems();
         for(let wallet of wallets) {
             let new_item = new WalletListItem(wallet);
             this.WalletsList.AddItem(new_item);

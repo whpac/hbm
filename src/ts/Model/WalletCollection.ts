@@ -2,9 +2,18 @@ import ElementNotFoundException from './ElementNotFoundException';
 import WalletRepository from './Repository/WalletRepository';
 import Wallet from './Wallet';
 
+type EventNames = 'WalletRemoved';
+type EventHandler = (sender: WalletCollection, event_data: WalletCollectionEventData) => void;
+export type WalletCollectionEventData = {
+    EventName: EventNames;
+    Wallet: Wallet;
+};
+
 export default class WalletCollection {
     protected static Singleton: WalletCollection | undefined;
     protected Wallets: Map<bigint, Wallet>;
+
+    protected EventHandlers: Map<EventNames, EventHandler[]>;
 
     /**
      * Returns a collection of wallets. If they hadn't been
@@ -22,9 +31,11 @@ export default class WalletCollection {
 
     protected constructor(wallets: Wallet[]) {
         this.Wallets = new Map();
+        this.EventHandlers = new Map();
 
         for(let wallet of wallets) {
             this.Wallets.set(wallet.Id, wallet);
+            wallet.AddEventListener('Removed', this.OnWalletRemoved.bind(this));
         }
     }
 
@@ -42,6 +53,7 @@ export default class WalletCollection {
             let wallet = await WalletRepository.GetWalletById(id);
             if(wallet !== undefined) {
                 this.Wallets.set(id, wallet);
+                wallet.AddEventListener('Removed', this.OnWalletRemoved.bind(this));
                 return wallet;
             }
         } catch(e) {
@@ -56,5 +68,38 @@ export default class WalletCollection {
      */
     public GetAllWallets(): Wallet[] {
         return Array.from(this.Wallets.values());
+    }
+
+    protected OnWalletRemoved(wallet: Wallet) {
+        this.Wallets.delete(wallet.Id);
+        this.FireEvent('WalletRemoved', wallet);
+    }
+
+    /**
+     * Registers an event handler
+     * @param event_name Name of an event to handle
+     * @param handler The event handler
+     */
+    public AddEventListener(event_name: EventNames, handler: EventHandler) {
+        if(!this.EventHandlers.has(event_name)) {
+            this.EventHandlers.set(event_name, []);
+        }
+        let handlers = this.EventHandlers.get(event_name);
+        handlers?.push(handler);
+    }
+
+    /**
+     * Fires an event
+     * @param event_name The name of the event to fire
+     * @param wallet The wallet that caused the event
+     */
+    protected FireEvent(event_name: EventNames, wallet: Wallet) {
+        let handlers = this.EventHandlers.get(event_name) ?? [];
+        for(let handler of handlers) {
+            handler(this, {
+                EventName: event_name,
+                Wallet: wallet
+            });
+        }
     }
 }
