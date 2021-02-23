@@ -184,7 +184,7 @@ export default class TransactionRepository {
 
         if(response.Status !== 204) {
             throw new RepositorySaveException(
-                `An unexpected response encountered during the transaction saving. ` +
+                `An unexpected response encountered during the transaction removal. ` +
                 `The server responded with HTTP code ${response.Status}. Expected 204.`);
         }
     }
