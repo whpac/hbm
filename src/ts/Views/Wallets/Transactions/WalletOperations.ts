@@ -4,7 +4,7 @@ import MenuStrip from '../../Common/MenuStrip/MenuStrip';
 import SubMenu from '../../Common/MenuStrip/SubMenu';
 
 type WalletOperationsEvents = 'AddTransactionRequested' | 'EditTransactionRequested' |
-    'RemoveTransactionRequested' | 'EditWalletRequested';
+    'RemoveTransactionRequested' | 'EditWalletRequested' | 'RemoveWalletRequested';
 
 export default class WalletOperations extends MenuStrip<WalletOperationsEvents> {
     protected AddButton: MenuButton;
@@ -41,7 +41,7 @@ export default class WalletOperations extends MenuStrip<WalletOperationsEvents> 
 
         this.FilterButton.Enabled = false;
         this.EditWalletButton.AddEventListener('Click', (() => this.FireEvent('EditWalletRequested')).bind(this));
-        this.RemoveWalletButton.Enabled = false;
+        this.RemoveWalletButton.AddEventListener('Click', (() => this.FireEvent('RemoveWalletRequested')).bind(this));
         this.DefaultWalletButton.Enabled = false;
     }
 

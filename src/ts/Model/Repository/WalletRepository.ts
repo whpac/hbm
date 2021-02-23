@@ -101,6 +101,31 @@ export default class WalletRepository {
         }
     }
 
+    public static async RemoveWallet(wallet: { Id: bigint | undefined; }) {
+        if(wallet.Id === undefined) {
+            throw new RepositorySaveException(`Cannot remove a wallet with an undefined identifier.`);
+        }
+
+        let response: HttpResponse;
+        try {
+            response = await Http.Request(
+                Endpoints.GetRemoveWalletUri(wallet.Id),
+                {
+                    Method: RequestMethod.DELETE
+                }
+            );
+        } catch(e) {
+            console.log(e);
+            throw this.ProcessRemoveException(e);
+        }
+
+        if(response.Status !== 204) {
+            throw new RepositorySaveException(
+                `An unexpected response encountered during the wallet removal. ` +
+                `The server responded with HTTP code ${response.Status}. Expected 204.`);
+        }
+    }
+
     protected static ProcessFetchException(e: any): RepositoryFetchException {
         if(e instanceof RequestFailedException) {
             return new RepositoryFetchException(
@@ -133,5 +158,22 @@ export default class WalletRepository {
         }
         return new RepositorySaveException(
             `Unable to save the wallet to the server. An unknown error occurred.`);
+    }
+
+    protected static ProcessRemoveException(e: any): RepositorySaveException {
+        if(e instanceof RequestFailedException) {
+            return new RepositorySaveException(
+                `Unable to remove the wallet from the server. HTTP error ${e.ResponseData.Status}`, e);
+        }
+        if(e instanceof NetworkErrorException) {
+            return new RepositorySaveException(
+                `Unable to remove the wallet from the server. Client is offline.`, e);
+        }
+        if(e instanceof MalformedResponseException) {
+            return new RepositorySaveException(
+                `There was an error during the wallet removal. Cannot understand the server response.`, e);
+        }
+        return new RepositorySaveException(
+            `Unable to remove the wallet from the server. An unknown error occurred.`);
     }
 }

@@ -2,7 +2,7 @@ import DependencyProperty from './DependencyProperty';
 import WalletRepository from './Repository/WalletRepository';
 import TransactionCollection, { TransactionCollectionEventData } from './TransactionCollection';
 
-type EventNames = 'BalanceChanged' | 'NameChanged';
+type EventNames = 'BalanceChanged' | 'NameChanged' | 'Removed';
 type EventHandler = (sender: Wallet, data: WalletEventData) => void;
 export type WalletEventData = {
     EventName: EventNames;
@@ -62,6 +62,12 @@ export default class Wallet {
         await WalletRepository.RenameWallet(this, new_name);
 
         this._Name.Set(new_name);
+    }
+
+    public async Remove() {
+        await WalletRepository.RemoveWallet(this);
+
+        this.FireEvent('Removed');
     }
 
     protected OnTransactionAdded(coll: TransactionCollection, data: TransactionCollectionEventData) {
