@@ -179,7 +179,7 @@ export default class TransactionRepository {
             );
         } catch(e) {
             console.log(e);
-            throw this.ProcessSaveException(e);
+            throw this.ProcessRemoveException(e);
         }
 
         if(response.Status !== 204) {
@@ -221,5 +221,22 @@ export default class TransactionRepository {
         }
         return new RepositorySaveException(
             `Unable to save the transaction to the server. An unknown error occurred.`);
+    }
+
+    protected static ProcessRemoveException(e: any): RepositorySaveException {
+        if(e instanceof RequestFailedException) {
+            return new RepositorySaveException(
+                `Unable to remove the transaction from the server. HTTP error ${e.ResponseData.Status}`, e);
+        }
+        if(e instanceof NetworkErrorException) {
+            return new RepositorySaveException(
+                `Unable to remove the transaction from the server. Client is offline.`, e);
+        }
+        if(e instanceof MalformedResponseException) {
+            return new RepositorySaveException(
+                `There was an error during the transaction removal. Cannot understand the server response.`, e);
+        }
+        return new RepositorySaveException(
+            `Unable to remove the transaction from the server. An unknown error occurred.`);
     }
 }
