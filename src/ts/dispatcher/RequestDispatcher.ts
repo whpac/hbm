@@ -12,9 +12,9 @@ export default class RequestDispatcher {
      */
     public async Dispatch(uri: string): Promise<void> {
         let command = this.ReadCommand(uri);
-        let executor = this.GetExecutor(command.Callee);
 
         try {
+            let executor = await this.GetExecutor(command.Callee);
             await executor.Execute(command);
         } catch(e) {
             // TODO: Display an alert
@@ -42,8 +42,8 @@ export default class RequestDispatcher {
      * If the requested identifier doesn't exist, throws an ExecutorNotFoundException.
      * @param callee Identifier of a controller to invoke
      */
-    protected GetExecutor(callee: string): RequestExecutor {
-        let executor = this.Executors?.Retrieve(callee);
+    protected async GetExecutor(callee: string): Promise<RequestExecutor> {
+        let executor = await this.Executors?.Retrieve(callee);
 
         if(executor === undefined) {
             throw new ExecutorNotFoundException(`Request executor with id '${callee}' hasn't been found.`, callee);

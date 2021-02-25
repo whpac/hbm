@@ -1,10 +1,14 @@
 import IExecutorStorage from '../Dispatcher/ExecutorStorage';
 import RequestExecutor from '../Dispatcher/RequestExecutor';
 import WalletListingController from '../Controllers/WalletListingController';
+import AuthManager from '../Authorization/AuthManager';
 
 export default class ExecutorStorage implements IExecutorStorage {
 
-    Retrieve(executor_id: string): RequestExecutor | undefined {
-        return new WalletListingController();
+    async Retrieve(executor_id: string): Promise<RequestExecutor | undefined> {
+        if(await AuthManager.IsAuthorized()) {
+            return new WalletListingController();
+        }
+        return undefined;
     }
 }

@@ -4,6 +4,14 @@ export default class Endpoints {
         return 'http://localhost/hbm/proxy';
     }
 
+    public static GetUserUri(): string {
+        return this.GetBaseUri() + '/user';
+    }
+
+    public static GetUserProfileUri(): string {
+        return this.GetBaseUri() + '/profile';
+    }
+
     public static GetWalletsUri(): string {
         return this.GetBaseUri() + '/wallet';
     }

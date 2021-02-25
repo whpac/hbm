@@ -1,4 +1,6 @@
+import BasicAuthorizationProvider from '../Authorization/BasicAuthorizationProvider';
 import RequestDispatcher from '../Dispatcher/RequestDispatcher';
+import Http from '../Network/Http';
 import BrowserAdapter from '../Views/Presentation/BrowserAdapter';
 import DialogPresenter from '../Views/Presentation/DialogPresenter';
 import PagePresenter from '../Views/Presentation/PagePresenter';
@@ -22,6 +24,8 @@ function Main() {
     }
     let dialog_adapter = new BrowserAdapter(dialog_space);
     DialogPresenter.SetDisplayAdapter(dialog_adapter);
+
+    Http.SetAuthorizationProvider(new BasicAuthorizationProvider());
 
     let rd = new RequestDispatcher();
     rd.SetExecutorStorage(new ExecutorStorage());

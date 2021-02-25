@@ -1,3 +1,5 @@
+import AuthManager from '../Authorization/AuthManager';
+import AuthorizationProvider from './AuthorizationProvider';
 import HttpResponse from './HttpResponse';
 import MalformedResponseException from './MalformedResponseException';
 import NetworkErrorException from './NetworkErrorException';
@@ -9,6 +11,7 @@ type ResolveFunction = (value: HttpResponse | PromiseLike<HttpResponse>) => void
 type RejectFunction = (reason?: any) => void;
 
 export default class Http {
+    protected static AuthorizationProvider: AuthorizationProvider | undefined;
 
     /**
      * Performs an HTTP request to the given URL
@@ -31,13 +34,23 @@ export default class Http {
         return new Promise<HttpResponse>(async (resolve, reject) => {
             let xhr = new XMLHttpRequest();
             xhr.open(request_options.Method, url, true);
+            // xhr.setRequestHeader('Authorization', '');
             xhr.onreadystatechange = Http.OnReadyStateChange(resolve, reject);
             xhr.onerror = () => { reject(new NetworkErrorException('An internet connection error occured.')); };
 
             if(serialized_data !== undefined) xhr.setRequestHeader('Content-Type', 'application/json');
+            this.AuthorizationProvider?.Authorize(xhr);
 
             xhr.send(serialized_data);
         });
+    }
+
+    /**
+     * Registers the provider of authorization
+     * @param provider The authorization provider
+     */
+    public static SetAuthorizationProvider(provider: AuthorizationProvider | undefined) {
+        this.AuthorizationProvider = provider;
     }
 
     protected static IsConnected() {
@@ -79,6 +92,10 @@ export default class Http {
                     Response: parsed_json,
                 });
             } else {
+                if(xhr.status == 401) {
+                    AuthManager.InvalidateAuthorization();
+                }
+
                 let parsed_json: any = {};
                 if(xhr.responseText !== '') {
                     try {
