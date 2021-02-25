@@ -19,15 +19,15 @@ import RemoveTransactionDialog from '../Views/Wallets/RemoveTransactionDialog/Re
 import RemoveWalletDialog from '../Views/Wallets/RemoveWalletDialog/RemoveWalletDialog';
 import TransactionDto from '../Views/Wallets/TransactionDto';
 import WalletDto from '../Views/Wallets/WalletDto';
-import WalletsPageContent from '../Views/Wallets/WalletsPageContent';
+import WalletsPage from '../Views/Wallets/WalletsPage';
 
 export default class WalletListingController implements RequestExecutor {
-    protected WalletsPage: WalletsPageContent | undefined;
+    protected WalletsPage: WalletsPage | undefined;
     protected WalletCollection: WalletCollection | undefined;
     protected CurrentWallet: Wallet | undefined;
 
     async Execute(command: Command): Promise<void> {
-        this.WalletsPage = new WalletsPageContent();
+        this.WalletsPage = new WalletsPage();
         this.WalletsPage.AddEventListener('WalletSelectionChanged', this.DisplayWalletRequested.bind(this));
         this.WalletsPage.AddEventListener('EditTransactionRequested', this.EditTransactionRequested.bind(this));
         this.WalletsPage.AddEventListener('AddTransactionRequested', this.NewTransactionRequested.bind(this));
@@ -36,10 +36,7 @@ export default class WalletListingController implements RequestExecutor {
         this.WalletsPage.AddEventListener('EditWalletRequested', this.EditWalletRequested.bind(this));
         this.WalletsPage.AddEventListener('RemoveWalletRequested', this.RemoveWalletRequested.bind(this));
 
-        let page_wrapper = new StateWrapperPage(this.WalletsPage);
-        page_wrapper.SetStatePresenter(ComponentState.ERROR, new ErrorPresenter());
-
-        let page_awaiter = PagePresenter.DisplayPage(page_wrapper);
+        let page_awaiter = PagePresenter.DisplayPage(this.WalletsPage);
 
         try {
             this.WalletCollection = await WalletCollection.GetCollection();

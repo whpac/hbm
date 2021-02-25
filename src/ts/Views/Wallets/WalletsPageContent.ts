@@ -1,6 +1,5 @@
 import Component from '../Common/Component';
 import { ComponentState } from '../Common/ComponentState';
-import Page from '../Presentation/Page';
 import WalletDto from './WalletDto';
 import WalletListPane from './WalletList/WalletListPane';
 import WalletTransactions from './Transactions/WalletTransactions';
@@ -8,14 +7,13 @@ import TransactionDto from './TransactionDto';
 import StateWrapper from '../Common/StateWrapper';
 import LoadingCircle from '../Common/LoadingCircle';
 import ErrorPresenter from '../Common/ErrorPresenter';
-import PageComponent from '../Presentation/PageComponent';
 
 type WalletsPageEvents = WalletTransactionsEvents | 'AddWalletRequested' | 'WalletSelectionChanged';
 type WalletTransactionsEvents =
     'AddTransactionRequested' | 'EditTransactionRequested' | 'RemoveTransactionRequested' |
     'EditWalletRequested' | 'RemoveWalletRequested';
 
-export default class WalletsPageContent extends PageComponent<WalletsPageEvents> {
+export default class WalletsPageContent extends Component<WalletsPageEvents> {
     protected WalletListPane: WalletListPane;
     protected WalletTransactionsPane: WalletTransactions;
 
@@ -34,18 +32,13 @@ export default class WalletsPageContent extends PageComponent<WalletsPageEvents>
         }
 
         this.WalletListPane = new WalletListPane();
-        this.WalletListPane.AddEventListener('SelectionChanged', this.OnWalletSelectionChanged.bind(this));
+        this.WalletListPane.AddEventListener('SelectionChanged', (() => this.FireEvent('WalletSelectionChanged')).bind(this));
         this.WalletListPane.AddEventListener('AddWalletRequested', (() => this.FireEvent('AddWalletRequested')).bind(this));
     }
 
-    Load(): void | Promise<void> { }
-    Unload(): void | Promise<void> { }
-    GetTitle(): string {
-        return 'Your wallets';
-    }
-
     protected Render(): HTMLElement {
-        let elem = document.createElement('main');
+        let elem = document.createElement('div');
+        elem.classList.add('discreet');
         elem.appendChild(this.WalletListPane.GetElement());
 
         let loading_wrapper = new StateWrapper(this.WalletTransactionsPane, 'wallet-transactions');
@@ -87,9 +80,5 @@ export default class WalletsPageContent extends PageComponent<WalletsPageEvents>
 
     public GetSelectedTransaction(): TransactionDto | undefined {
         return this.WalletTransactionsPane.GetSelectedTransaction();
-    }
-
-    protected OnWalletSelectionChanged() {
-        this.FireEvent('WalletSelectionChanged');
     }
 }
