@@ -1,10 +1,15 @@
 import Command from '../Dispatcher/Command';
 import RequestExecutor from '../Dispatcher/RequestExecutor';
+import RepositoryFetchException from '../Model/Repository/RepositoryFetchException';
 import RepositorySaveException from '../Model/Repository/RepositorySaveException';
 import Wallet from '../Model/Wallet';
 import WalletCollection, { WalletCollectionEventData } from '../Model/WalletCollection';
 import Component from '../Views/Common/Component';
 import ComponentEvent from '../Views/Common/ComponentEvent';
+import { ComponentState } from '../Views/Common/ComponentState';
+import ErrorPresenter from '../Views/Common/ErrorPresenter';
+import StateWrapper from '../Views/Common/StateWrapper';
+import StateWrapperPage from '../Views/Common/StateWrapperPage';
 import DialogPresenter from '../Views/Presentation/DialogPresenter';
 import PagePresenter from '../Views/Presentation/PagePresenter';
 import AddWalletDialog from '../Views/Wallets/AddWalletDialog/AddWalletDialog';
@@ -30,12 +35,24 @@ export default class WalletListingController implements RequestExecutor {
         this.WalletsPage.AddEventListener('AddWalletRequested', this.AddWalletRequested.bind(this));
         this.WalletsPage.AddEventListener('EditWalletRequested', this.EditWalletRequested.bind(this));
         this.WalletsPage.AddEventListener('RemoveWalletRequested', this.RemoveWalletRequested.bind(this));
-        let page_awaiter = PagePresenter.DisplayPage(this.WalletsPage);
 
-        this.WalletCollection = await WalletCollection.GetCollection();
-        this.WalletCollection.AddEventListener('WalletRemoved', this.DisplayWalletList.bind(this));
-        this.WalletCollection.AddEventListener('WalletAdded', this.OnWalletAdded.bind(this));
-        this.DisplayWalletList();
+        let page_wrapper = new StateWrapperPage(this.WalletsPage);
+        page_wrapper.SetStatePresenter(ComponentState.ERROR, new ErrorPresenter());
+
+        let page_awaiter = PagePresenter.DisplayPage(page_wrapper);
+
+        try {
+            this.WalletCollection = await WalletCollection.GetCollection();
+            this.WalletCollection.AddEventListener('WalletRemoved', this.DisplayWalletList.bind(this));
+            this.WalletCollection.AddEventListener('WalletAdded', this.OnWalletAdded.bind(this));
+            this.DisplayWalletList();
+        } catch(e) {
+            let msg = 'An unknown error occured while loading your wallets.';
+            if(e instanceof RepositoryFetchException) {
+                msg = e.Message;
+            }
+            this.WalletsPage.DisplayWalletListError(msg);
+        }
 
         await page_awaiter;
     }
@@ -60,19 +77,27 @@ export default class WalletListingController implements RequestExecutor {
         let wallet_dto = this.WalletsPage?.GetSelectedWallet();
         this.WalletsPage?.StartedFetchingTransactions();
 
-        let wallet: Wallet | undefined;
-        let transaction_dtos: TransactionDto[] = [];
-        if(wallet_dto !== undefined && wallet_dto.Id !== undefined) {
-            wallet = await this.WalletCollection.GetWalletById(wallet_dto?.Id);
-            let transactions = await wallet.GetTransactions();
+        try {
+            let wallet: Wallet | undefined;
+            let transaction_dtos: TransactionDto[] = [];
+            if(wallet_dto !== undefined && wallet_dto.Id !== undefined) {
+                wallet = await this.WalletCollection.GetWalletById(wallet_dto?.Id);
+                let transactions = await wallet.GetTransactions();
 
-            for(let transaction of transactions.GetAllTransactions()) {
-                transaction_dtos.push(new TransactionDto(transaction));
+                for(let transaction of transactions.GetAllTransactions()) {
+                    transaction_dtos.push(new TransactionDto(transaction));
+                }
             }
-        }
 
-        this.CurrentWallet = wallet;
-        this.WalletsPage?.DisplayWalletTransactions(wallet_dto, transaction_dtos);
+            this.CurrentWallet = wallet;
+            this.WalletsPage?.DisplayWalletTransactions(wallet_dto, transaction_dtos);
+        } catch(e) {
+            let msg = 'An unknown error occured while loading transactions.';
+            if(e instanceof RepositoryFetchException) {
+                msg = e.Message;
+            }
+            this.WalletsPage?.DisplayTransactionListError(msg);
+        }
     }
 
     protected OnWalletAdded(coll: WalletCollection, data: WalletCollectionEventData) {
