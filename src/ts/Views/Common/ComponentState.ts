@@ -1,4 +1,5 @@
 export enum ComponentState {
     LOADING,
-    READY
+    READY,
+    ERROR
 }

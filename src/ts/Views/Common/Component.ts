@@ -14,8 +14,15 @@ export default abstract class Component<Events extends string = ""> {
         return this._State;
     }
 
+    private _ErrorMessage: string;
+    /** The error associated with the component */
+    public get ErrorMessage(): string {
+        return this._ErrorMessage;
+    }
+
     public constructor() {
         this._State = ComponentState.LOADING;
+        this._ErrorMessage = '';
         this.EventListeners = new Map();
     }
 
@@ -54,9 +61,13 @@ export default abstract class Component<Events extends string = ""> {
     /**
      * Changes state of the component
      * @param new_state New state of the component
+     * @param error_text The error message
      */
-    protected SetState(new_state: ComponentState) {
+    protected SetState(new_state: ComponentState): void;
+    protected SetState(new_state: ComponentState.ERROR, error_text: string): void;
+    protected SetState(new_state: ComponentState, error_text?: string) {
         this._State = new_state;
+        this._ErrorMessage = error_text ?? '';
         this.FireEvent('StateChanged');
     }
 
