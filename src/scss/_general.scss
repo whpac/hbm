@@ -47,3 +47,5 @@ input[type=text], input[type=number], input[type=datetime-local], textarea {
     }
 }
 input[type=datetime-local] {font-family:monospace;}
+
+.component-error-wrapper {display:grid; place-content:center; color:#b71c1c; font-size:0.9em;}

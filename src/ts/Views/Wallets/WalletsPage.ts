@@ -5,8 +5,9 @@ import WalletDto from './WalletDto';
 import WalletListPane from './WalletList/WalletListPane';
 import WalletTransactions from './Transactions/WalletTransactions';
 import TransactionDto from './TransactionDto';
-import LoadingWrapper from '../Common/LoadingWrapper';
+import StateWrapper from '../Common/StateWrapper';
 import LoadingCircle from '../Common/LoadingCircle';
+import ErrorPresenter from '../Common/ErrorPresenter';
 
 type WalletsPageEvents = WalletTransactionsEvents | 'AddWalletRequested' | 'WalletSelectionChanged';
 type WalletTransactionsEvents =
@@ -39,17 +40,27 @@ export default class WalletsPage extends Component<WalletsPageEvents> implements
     Load(): void | Promise<void> { }
     Unload(): void | Promise<void> { }
     GetTitle(): string {
-        return 'Test';
+        return 'Your wallets';
     }
 
     protected Render(): HTMLElement {
         let elem = document.createElement('main');
         elem.appendChild(this.WalletListPane.GetElement());
 
-        let loading_wrapper = new LoadingWrapper(this.WalletTransactionsPane, new LoadingCircle(), 'wallet-transactions');
+        let loading_wrapper = new StateWrapper(this.WalletTransactionsPane, 'wallet-transactions');
+        loading_wrapper.SetStatePresenter(ComponentState.LOADING, new LoadingCircle());
+        loading_wrapper.SetStatePresenter(ComponentState.ERROR, new ErrorPresenter());
 
         elem.appendChild(loading_wrapper.GetElement());
         return elem;
+    }
+
+    public DisplayWalletListError(error_message: string) {
+        this.SetState(ComponentState.ERROR, error_message);
+    }
+
+    public DisplayTransactionListError(error_message: string) {
+        this.WalletTransactionsPane.DisplayLoadingError(error_message);
     }
 
     public PopulateWallets(wallets: WalletDto[]) {

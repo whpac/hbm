@@ -60,6 +60,10 @@ export default class WalletTransactions extends Component<WalletTransactionsEven
         this.SetState(ComponentState.LOADING);
     }
 
+    public DisplayLoadingError(error_message: string) {
+        this.SetState(ComponentState.ERROR, error_message);
+    }
+
     public GetSelectedTransaction(): TransactionDto | undefined {
         return this.TransactionsTable.GetSelectedItem()?.Transaction;
     }

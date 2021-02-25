@@ -52,6 +52,16 @@ export default class StateWrapper extends Component {
         if(presenter === undefined) {
             presenter = this.ActualComponent;
         }
+
+        if(presenter instanceof StatePresenter) {
+            presenter.PassComponent(this.ActualComponent);
+        }
+
         return presenter.GetElement();
     }
+}
+
+export abstract class StatePresenter<T extends string = ''> extends Component<T> {
+
+    public abstract PassComponent(component: Component<string>): void;
 }
