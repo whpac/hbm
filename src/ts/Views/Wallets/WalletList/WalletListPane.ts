@@ -1,8 +1,9 @@
 import Button from '../../Common/Button';
 import Component from '../../Common/Component';
+import { ComponentState } from '../../Common/ComponentState';
 import ListView from '../../Common/ListView';
 import LoadingCircle from '../../Common/LoadingCircle';
-import LoadingWrapper from '../../Common/LoadingWrapper';
+import StateWrapper from '../../Common/StateWrapper';
 import WalletDto from '../WalletDto';
 import WalletListItem from './WalletListItem';
 
@@ -30,7 +31,8 @@ export default class WalletListPane extends Component<'SelectionChanged' | 'AddW
         add_wallet_button.AddEventListener('Click', (() => this.FireEvent('AddWalletRequested')).bind(this));
         pane_heading.appendChild(add_wallet_button.GetElement());
 
-        let loading_wrapper = new LoadingWrapper(this.WalletsList, new LoadingCircle());
+        let loading_wrapper = new StateWrapper(this.WalletsList);
+        loading_wrapper.SetStatePresenter(ComponentState.LOADING, new LoadingCircle());
         pane.appendChild(loading_wrapper.GetElement());
 
         return pane;
