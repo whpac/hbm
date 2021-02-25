@@ -49,4 +49,14 @@ export default class WalletListPane extends Component<'SelectionChanged' | 'AddW
     public GetSelectedItem() {
         return this.WalletsList.GetSelectedItem();
     }
+
+    public SelectWallet(wallet: WalletDto) {
+        let items = this.WalletsList.GetItems();
+        for(let i = 0; i < items.length; ++i) {
+            if(items[i].Wallet.Id != wallet.Id) continue;
+
+            this.WalletsList.SetSelectedIndex(i);
+            break;
+        }
+    }
 }

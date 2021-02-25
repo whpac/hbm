@@ -61,6 +61,10 @@ export default class WalletsPage extends Component<WalletsPageEvents> implements
         return this.WalletListPane.GetSelectedItem()?.Wallet;
     }
 
+    public SelectWallet(wallet: WalletDto) {
+        this.WalletListPane.SelectWallet(wallet);
+    }
+
     public StartedFetchingTransactions() {
         this.WalletTransactionsPane.DisplayLoadingIndicator();
     }

@@ -2,7 +2,7 @@ import Command from '../Dispatcher/Command';
 import RequestExecutor from '../Dispatcher/RequestExecutor';
 import RepositorySaveException from '../Model/Repository/RepositorySaveException';
 import Wallet from '../Model/Wallet';
-import WalletCollection from '../Model/WalletCollection';
+import WalletCollection, { WalletCollectionEventData } from '../Model/WalletCollection';
 import Component from '../Views/Common/Component';
 import ComponentEvent from '../Views/Common/ComponentEvent';
 import DialogPresenter from '../Views/Presentation/DialogPresenter';
@@ -34,6 +34,7 @@ export default class WalletListingController implements RequestExecutor {
 
         this.WalletCollection = await WalletCollection.GetCollection();
         this.WalletCollection.AddEventListener('WalletRemoved', this.DisplayWalletList.bind(this));
+        this.WalletCollection.AddEventListener('WalletAdded', this.OnWalletAdded.bind(this));
         this.DisplayWalletList();
 
         await page_awaiter;
@@ -72,6 +73,13 @@ export default class WalletListingController implements RequestExecutor {
 
         this.CurrentWallet = wallet;
         this.WalletsPage?.DisplayWalletTransactions(wallet_dto, transaction_dtos);
+    }
+
+    protected OnWalletAdded(coll: WalletCollection, data: WalletCollectionEventData) {
+        this.DisplayWalletList();
+
+        let wallet_dto = new WalletDto(data.Wallet);
+        this.WalletsPage?.SelectWallet(wallet_dto);
     }
 
     protected EditTransactionRequested() {

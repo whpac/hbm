@@ -49,6 +49,13 @@ export default class ListView<TItem extends ListViewItem = ListViewItem, TEvent 
     }
 
     /**
+     * Returns an array of all items
+     */
+    public GetItems(): TItem[] {
+        return this.Items;
+    }
+
+    /**
      * Marks an item at the given index as selected. If out of range, deselects everything
      * @param index Index of an item to select
      */
