@@ -15,7 +15,7 @@ type WalletTransactionsEvents =
     'AddTransactionRequested' | 'EditTransactionRequested' | 'RemoveTransactionRequested' |
     'EditWalletRequested' | 'RemoveWalletRequested';
 
-export default class WalletsPage extends PageComponent<WalletsPageEvents> {
+export default class WalletsPageContent extends PageComponent<WalletsPageEvents> {
     protected WalletListPane: WalletListPane;
     protected WalletTransactionsPane: WalletTransactions;
 

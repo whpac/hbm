@@ -19,15 +19,15 @@ import RemoveTransactionDialog from '../Views/Wallets/RemoveTransactionDialog/Re
 import RemoveWalletDialog from '../Views/Wallets/RemoveWalletDialog/RemoveWalletDialog';
 import TransactionDto from '../Views/Wallets/TransactionDto';
 import WalletDto from '../Views/Wallets/WalletDto';
-import WalletsPage from '../Views/Wallets/WalletsPage';
+import WalletsPageContent from '../Views/Wallets/WalletsPageContent';
 
 export default class WalletListingController implements RequestExecutor {
-    protected WalletsPage: WalletsPage | undefined;
+    protected WalletsPage: WalletsPageContent | undefined;
     protected WalletCollection: WalletCollection | undefined;
     protected CurrentWallet: Wallet | undefined;
 
     async Execute(command: Command): Promise<void> {
-        this.WalletsPage = new WalletsPage();
+        this.WalletsPage = new WalletsPageContent();
         this.WalletsPage.AddEventListener('WalletSelectionChanged', this.DisplayWalletRequested.bind(this));
         this.WalletsPage.AddEventListener('EditTransactionRequested', this.EditTransactionRequested.bind(this));
         this.WalletsPage.AddEventListener('AddTransactionRequested', this.NewTransactionRequested.bind(this));
