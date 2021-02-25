@@ -8,13 +8,14 @@ import TransactionDto from './TransactionDto';
 import StateWrapper from '../Common/StateWrapper';
 import LoadingCircle from '../Common/LoadingCircle';
 import ErrorPresenter from '../Common/ErrorPresenter';
+import PageComponent from '../Presentation/PageComponent';
 
 type WalletsPageEvents = WalletTransactionsEvents | 'AddWalletRequested' | 'WalletSelectionChanged';
 type WalletTransactionsEvents =
     'AddTransactionRequested' | 'EditTransactionRequested' | 'RemoveTransactionRequested' |
     'EditWalletRequested' | 'RemoveWalletRequested';
 
-export default class WalletsPage extends Component<WalletsPageEvents> implements Page {
+export default class WalletsPage extends PageComponent<WalletsPageEvents> {
     protected WalletListPane: WalletListPane;
     protected WalletTransactionsPane: WalletTransactions;
 
