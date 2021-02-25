@@ -1,8 +1,9 @@
 import ElementNotFoundException from './ElementNotFoundException';
+import { RawWallet } from './RawWallet';
 import WalletRepository from './Repository/WalletRepository';
 import Wallet from './Wallet';
 
-type EventNames = 'WalletRemoved';
+type EventNames = 'WalletAdded' | 'WalletRemoved';
 type EventHandler = (sender: WalletCollection, event_data: WalletCollectionEventData) => void;
 export type WalletCollectionEventData = {
     EventName: EventNames;
@@ -68,6 +69,18 @@ export default class WalletCollection {
      */
     public GetAllWallets(): Wallet[] {
         return Array.from(this.Wallets.values());
+    }
+
+    /**
+     * Creates a new wallet in this collection. If fails, throws a RepositorySaveException.
+     * @param wallet_data Wallet data
+     */
+    public async CreateNew(wallet_data: RawWallet): Promise<Wallet> {
+        let wallet = await WalletRepository.CreateWallet(wallet_data);
+        wallet.AddEventListener('Removed', this.OnWalletRemoved.bind(this));
+        this.Wallets.set(wallet.Id, wallet);
+        this.FireEvent('WalletAdded', wallet);
+        return wallet;
     }
 
     protected OnWalletRemoved(wallet: Wallet) {

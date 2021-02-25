@@ -1,3 +1,27 @@
+.pane-heading {
+    display:grid; grid-template-columns:1fr auto; grid-template-areas:'content button';
+
+    button {
+        @extend %reset-button;
+        grid-area:button; align-self:center; padding:8px 12px 6px 12px; cursor:pointer;
+        transition:background 0.3s; font-size:0.9rem; font-weight:400; border-radius:2px;
+
+        .command-icon {
+            font-size:1.2em; vertical-align:top; pointer-events:none; margin:-0.1em 4px 0 -4px;
+        }
+
+        &:hover {background:#f0f0f0;}
+        &:active {background:#e0e0e0;}
+
+        &:disabled {
+            color:rgba(0,0,0,0.3); cursor:default;
+
+            &:hover, &:active {background:unset;}
+            &:focus {outline:none;}
+        }
+    }
+}
+
 .wallet-list-item {
     button {
         display:grid; grid-template-columns:1fr auto;

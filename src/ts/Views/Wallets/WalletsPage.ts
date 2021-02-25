@@ -8,7 +8,7 @@ import TransactionDto from './TransactionDto';
 import LoadingWrapper from '../Common/LoadingWrapper';
 import LoadingCircle from '../Common/LoadingCircle';
 
-type WalletsPageEvents = WalletTransactionsEvents | 'WalletSelectionChanged';
+type WalletsPageEvents = WalletTransactionsEvents | 'AddWalletRequested' | 'WalletSelectionChanged';
 type WalletTransactionsEvents =
     'AddTransactionRequested' | 'EditTransactionRequested' | 'RemoveTransactionRequested' |
     'EditWalletRequested' | 'RemoveWalletRequested';
@@ -33,6 +33,7 @@ export default class WalletsPage extends Component<WalletsPageEvents> implements
 
         this.WalletListPane = new WalletListPane();
         this.WalletListPane.AddEventListener('SelectionChanged', this.OnWalletSelectionChanged.bind(this));
+        this.WalletListPane.AddEventListener('AddWalletRequested', (() => this.FireEvent('AddWalletRequested')).bind(this));
     }
 
     Load(): void | Promise<void> { }

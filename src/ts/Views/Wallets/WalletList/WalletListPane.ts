@@ -1,3 +1,4 @@
+import Button from '../../Common/Button';
 import Component from '../../Common/Component';
 import ListView from '../../Common/ListView';
 import LoadingCircle from '../../Common/LoadingCircle';
@@ -5,7 +6,7 @@ import LoadingWrapper from '../../Common/LoadingWrapper';
 import WalletDto from '../WalletDto';
 import WalletListItem from './WalletListItem';
 
-export default class WalletListPane extends Component<'SelectionChanged'>{
+export default class WalletListPane extends Component<'SelectionChanged' | 'AddWalletRequested'>{
     protected WalletsList: ListView<WalletListItem>;
 
     public constructor() {
@@ -24,6 +25,10 @@ export default class WalletListPane extends Component<'SelectionChanged'>{
         pane_heading.classList.add('pane-heading');
         pane_heading.textContent = 'Wallets';
         pane.appendChild(pane_heading);
+
+        let add_wallet_button = new Button('Add', { IconName: 'add-outline', ToolTip: 'Add a new wallet' });
+        add_wallet_button.AddEventListener('Click', (() => this.FireEvent('AddWalletRequested')).bind(this));
+        pane_heading.appendChild(add_wallet_button.GetElement());
 
         let loading_wrapper = new LoadingWrapper(this.WalletsList, new LoadingCircle());
         pane.appendChild(loading_wrapper.GetElement());

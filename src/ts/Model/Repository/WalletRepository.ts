@@ -4,6 +4,7 @@ import MalformedResponseException from '../../Network/MalformedResponseException
 import NetworkErrorException from '../../Network/NetworkErrorException';
 import RequestFailedException from '../../Network/RequestFailedException';
 import { RequestMethod } from '../../Network/RequestMethod';
+import { RawWallet } from '../RawWallet';
 import Wallet from '../Wallet';
 import Endpoints from './Endpoints';
 import RepositoryFetchException from './RepositoryFetchException';
@@ -33,12 +34,7 @@ export default class WalletRepository {
 
         let wallets: Wallet[] = [];
         for(let w of api_wallets) {
-            wallets.push(new Wallet(
-                BigInt(w.id),
-                w.name,
-                BigInt(w.balance * 100),    // Balance is stored in base units
-                w.user
-            ));
+            wallets.push(this.CreateWalletFromApi(w));
         }
 
         return wallets;
@@ -58,14 +54,51 @@ export default class WalletRepository {
         }
         let api_wallet = response.Response as ApiResponseWallet;
 
-        let wallet = new Wallet(
+        let wallet = this.CreateWalletFromApi(api_wallet);
+        return wallet;
+    }
+
+    protected static CreateWalletFromApi(api_wallet: ApiResponseWallet) {
+        return new Wallet(
             BigInt(api_wallet.id),
             api_wallet.name,
             BigInt(api_wallet.balance * 100),   // Balance is stored in base units
             api_wallet.user
         );
+    }
 
-        return wallet;
+    /**
+     * Created a wallet. If fails, throws a RepositorySaveException
+     * @param wallet The wallet to rename
+     * @param new_name The new name
+     */
+    public static async CreateWallet(wallet_data: RawWallet): Promise<Wallet> {
+        let payload = {
+            name: wallet_data.Name,
+            balance: Number(wallet_data.Balance) / 100
+        };
+
+        let response: HttpResponse;
+        try {
+            response = await Http.Request(
+                Endpoints.GetCreateWalletUri(),
+                {
+                    Method: RequestMethod.POST,
+                    Payload: payload
+                }
+            );
+        } catch(e) {
+            console.log(e);
+            throw this.ProcessSaveException(e);
+        }
+
+        if(response.Status !== 201) {
+            throw new RepositorySaveException(
+                `An unexpected response encountered during the wallet creation. ` +
+                `The server responded with HTTP code ${response.Status}. Expected 201.`);
+        }
+
+        return this.CreateWalletFromApi(response.Response as ApiResponseWallet);
     }
 
     /**

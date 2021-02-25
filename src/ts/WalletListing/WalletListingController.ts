@@ -7,6 +7,7 @@ import Component from '../Views/Common/Component';
 import ComponentEvent from '../Views/Common/ComponentEvent';
 import DialogPresenter from '../Views/Presentation/DialogPresenter';
 import PagePresenter from '../Views/Presentation/PagePresenter';
+import AddWalletDialog from '../Views/Wallets/AddWalletDialog/AddWalletDialog';
 import EditTransactionDialog from '../Views/Wallets/EditTransactionDialog/EditTransactionDialog';
 import EditWalletDialog from '../Views/Wallets/EditWalletDialog/EditWalletDialog';
 import RemoveTransactionDialog from '../Views/Wallets/RemoveTransactionDialog/RemoveTransactionDialog';
@@ -26,6 +27,7 @@ export default class WalletListingController implements RequestExecutor {
         this.WalletsPage.AddEventListener('EditTransactionRequested', this.EditTransactionRequested.bind(this));
         this.WalletsPage.AddEventListener('AddTransactionRequested', this.NewTransactionRequested.bind(this));
         this.WalletsPage.AddEventListener('RemoveTransactionRequested', this.RemoveTransactionRequested.bind(this));
+        this.WalletsPage.AddEventListener('AddWalletRequested', this.AddWalletRequested.bind(this));
         this.WalletsPage.AddEventListener('EditWalletRequested', this.EditWalletRequested.bind(this));
         this.WalletsPage.AddEventListener('RemoveWalletRequested', this.RemoveWalletRequested.bind(this));
         let page_awaiter = PagePresenter.DisplayPage(this.WalletsPage);
@@ -59,7 +61,7 @@ export default class WalletListingController implements RequestExecutor {
 
         let wallet: Wallet | undefined;
         let transaction_dtos: TransactionDto[] = [];
-        if(wallet_dto !== undefined) {
+        if(wallet_dto !== undefined && wallet_dto.Id !== undefined) {
             wallet = await this.WalletCollection.GetWalletById(wallet_dto?.Id);
             let transactions = await wallet.GetTransactions();
 
@@ -88,6 +90,10 @@ export default class WalletListingController implements RequestExecutor {
         if(transaction_dto === undefined) return;
 
         this.DisplayRemoveTransactionDialog(transaction_dto);
+    }
+
+    protected AddWalletRequested() {
+        this.DisplayNewWalletDialog();
     }
 
     protected EditWalletRequested() {
@@ -148,33 +154,35 @@ export default class WalletListingController implements RequestExecutor {
         DialogPresenter.DisplayDialog(dialog);
     }
 
+    protected DisplayNewWalletDialog() {
+        let dialog = new AddWalletDialog();
+        dialog.Prepare();
+        dialog.AddEventListener(
+            'SaveRequested',
+            ((d: Component, e: ComponentEvent) =>
+                this.SaveWallet(d as AddWalletDialog, e.Data)).bind(this)
+        );
+        DialogPresenter.DisplayDialog(dialog);
+    }
+
     protected async SaveTransaction(dialog: EditTransactionDialog, transaction_dto: TransactionDto) {
         if(this.CurrentWallet === undefined) return;
         let transactions = await this.CurrentWallet.GetTransactions();
 
-        if(transaction_dto.Id === undefined) {
-            try {
+        try {
+            if(transaction_dto.Id === undefined) {
                 await transactions.CreateNew(transaction_dto);
                 this.DisplayWalletRequested();  // Refresh the wallet view
-                dialog.Hide();
-            } catch(e) {
-                if(e instanceof RepositorySaveException) {
-                    dialog.OnSaveFailed(e.Message);
-                } else {
-                    dialog.OnSaveFailed('An unknown error occurred.');
-                }
-            }
-        } else {
-            try {
+            } else {
                 let transaction = await transactions.GetTransactionById(transaction_dto.Id);
                 await transaction.MakeChanges(transaction_dto);
-                dialog.Hide();
-            } catch(e) {
-                if(e instanceof RepositorySaveException) {
-                    dialog.OnSaveFailed(e.Message);
-                } else {
-                    dialog.OnSaveFailed('An unknown error occurred.');
-                }
+            }
+            dialog.Hide();
+        } catch(e) {
+            if(e instanceof RepositorySaveException) {
+                dialog.OnSaveFailed(e.Message);
+            } else {
+                dialog.OnSaveFailed('An unknown error occurred.');
             }
         }
     }
@@ -197,13 +205,17 @@ export default class WalletListingController implements RequestExecutor {
         }
     }
 
-    protected async SaveWallet(dialog: EditWalletDialog, wallet_dto: WalletDto) {
+    protected async SaveWallet(dialog: EditWalletDialog | AddWalletDialog, wallet_dto: WalletDto) {
         if(this.WalletCollection === undefined) return;
 
         try {
-            let wallet = await this.WalletCollection.GetWalletById(wallet_dto.Id);
-            await wallet.Rename(wallet_dto.Name);
-            this.DisplayWalletRequested();
+            if(wallet_dto.Id === undefined) {
+                await this.WalletCollection.CreateNew(wallet_dto);
+            } else {
+                let wallet = await this.WalletCollection.GetWalletById(wallet_dto.Id);
+                await wallet.Rename(wallet_dto.Name);
+                this.DisplayWalletRequested();
+            }
             dialog.Hide();
         } catch(e) {
             if(e instanceof RepositorySaveException) {
@@ -216,6 +228,7 @@ export default class WalletListingController implements RequestExecutor {
 
     protected async RemoveWallet(dialog: RemoveWalletDialog, wallet_dto: WalletDto) {
         if(this.WalletCollection === undefined) return;
+        if(wallet_dto.Id === undefined) return;
 
         try {
             let wallet = await this.WalletCollection.GetWalletById(wallet_dto.Id);

@@ -4,7 +4,7 @@ type WalletDtoProperty = 'Balance' | 'Name';
 type BindingFunction<T> = (value: T) => void;
 
 export default class WalletDto {
-    public readonly Id: bigint;
+    public readonly Id: bigint | undefined;
     public Name: string;
     public Balance: bigint;
     public IsDefault: boolean;
@@ -12,9 +12,9 @@ export default class WalletDto {
     protected Bindings: Map<WalletDtoProperty, BindingFunction<any>[]>;
 
     public constructor(wallet: Wallet);
-    public constructor(id: bigint, name: string, balance: bigint, is_default: boolean);
-    public constructor(wallet_or_id: Wallet | bigint, name?: string, balance?: bigint, is_default?: boolean) {
-        if(typeof wallet_or_id == 'bigint') {
+    public constructor(id: bigint | undefined, name: string, balance: bigint, is_default: boolean);
+    public constructor(wallet_or_id: Wallet | bigint | undefined, name?: string, balance?: bigint, is_default?: boolean) {
+        if(typeof wallet_or_id == 'bigint' || wallet_or_id === undefined) {
             this.Id = wallet_or_id;
             this.Name = name!;
             this.Balance = balance!;
