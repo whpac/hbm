@@ -1,6 +1,6 @@
 import IExecutorStorage from '../Dispatcher/ExecutorStorage';
 import RequestExecutor from '../Dispatcher/RequestExecutor';
-import WalletListingController from '../WalletListing/WalletListingController';
+import WalletListingController from '../Controllers/WalletListingController';
 
 export default class ExecutorStorage implements IExecutorStorage {
 
