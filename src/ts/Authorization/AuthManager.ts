@@ -24,7 +24,6 @@ export default class AuthManager {
             let current_user: User = await UserRepository.GetCurrent();
             return current_user.IsAuthorized;
         } catch(e) {
-            console.log(e);
             return false;
         }
     }
