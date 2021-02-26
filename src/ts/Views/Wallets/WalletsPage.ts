@@ -39,6 +39,7 @@ export default class WalletsPage extends PageComponent<WalletsPageEvents> {
 
     protected Render(): HTMLElement {
         let elem = document.createElement('main');
+        elem.classList.add('two-column');
         elem.appendChild(this.PageWrapper.GetElement());
         return elem;
     }
