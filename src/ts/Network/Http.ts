@@ -37,6 +37,7 @@ export default class Http {
             // xhr.setRequestHeader('Authorization', '');
             xhr.onreadystatechange = Http.OnReadyStateChange(resolve, reject);
             xhr.onerror = () => { reject(new NetworkErrorException('An internet connection error occured.')); };
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
             if(serialized_data !== undefined) xhr.setRequestHeader('Content-Type', 'application/json');
             this.AuthorizationProvider?.Authorize(xhr);
