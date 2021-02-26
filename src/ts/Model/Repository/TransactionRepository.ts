@@ -153,7 +153,6 @@ export default class TransactionRepository {
                 }
             );
         } catch(e) {
-            console.log(e);
             throw this.ProcessSaveException(e);
         }
 
@@ -178,7 +177,6 @@ export default class TransactionRepository {
                 }
             );
         } catch(e) {
-            console.log(e);
             throw this.ProcessRemoveException(e);
         }
 
