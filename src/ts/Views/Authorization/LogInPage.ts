@@ -3,6 +3,7 @@ import { ComponentState } from '../Common/ComponentState';
 import LoadingCircle from '../Common/LoadingCircle';
 import StateWrapper from '../Common/StateWrapper';
 import PageComponent from '../Presentation/PageComponent';
+import Invitation from './Invitation';
 import LogInForm from './LogInForm/LogInForm';
 
 export default class LogInPage extends PageComponent<'LoginRequested'> {
@@ -31,6 +32,8 @@ export default class LogInPage extends PageComponent<'LoginRequested'> {
     protected Render(): HTMLElement {
         let elem = document.createElement('main');
         elem.classList.add('login-page');
+
+        elem.appendChild(new Invitation().GetElement());
 
         this.LogInForm.AddEventListener('LoginRequested', ((s: any, d: ComponentEvent) => this.FireEvent('LoginRequested', d.Data)).bind(this));
         let wrapper = new StateWrapper(this.LogInForm, 'login-form');

@@ -19,8 +19,6 @@ export default class AuthManager {
     }
 
     public static GetAuthToken(): string | undefined {
-        // return 'dGVzdDI4QGV4YW1';
-        // return 'dGVzdDI4QGV4YW1wbGUuY29tOmhhc2xv';
         return this.AuthToken;
     }
 
