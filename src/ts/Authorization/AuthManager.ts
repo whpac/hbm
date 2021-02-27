@@ -1,4 +1,5 @@
 import UserRepository from '../Model/Repository/UserRepository';
+import SessionStorage from './SessionStorage';
 import User from './User';
 
 export default class AuthManager {
@@ -32,11 +33,25 @@ export default class AuthManager {
         let is_authorized = await this.IsAuthorized();
 
         if(!is_authorized) {
+            this.InvalidateAuthorization();
             this.AuthToken = prev_token;
             return false;
         }
 
+        this.SaveToken();
         return true;
+    }
+
+    public static RestoreToken() {
+        let token = SessionStorage.Get('auth_token');
+        if(token === null) return;
+
+        this.InvalidateAuthorization();
+        this.AuthToken = token;
+    }
+
+    protected static SaveToken() {
+        SessionStorage.Set('auth_token', this.AuthToken ?? null);
     }
 
     protected static async CheckIsAuthorized() {

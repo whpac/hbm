@@ -1,3 +1,4 @@
+import AuthManager from '../Authorization/AuthManager';
 import BasicAuthorizationProvider from '../Authorization/BasicAuthorizationProvider';
 import RequestDispatcher from '../Dispatcher/RequestDispatcher';
 import Http from '../Network/Http';
@@ -33,6 +34,8 @@ export default class App {
         DialogPresenter.SetDisplayAdapter(dialog_adapter);
 
         Http.SetAuthorizationProvider(new BasicAuthorizationProvider());
+
+        AuthManager.RestoreToken();
 
         this.RequestDispatcher = new RequestDispatcher();
         this.RequestDispatcher.SetExecutorStorage(new ExecutorStorage());
