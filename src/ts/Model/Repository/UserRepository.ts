@@ -18,6 +18,9 @@ type ApiProfile = {
 
 export default class UserRepository {
 
+    /**
+     * Returns the current user. Should fail, throws a RepositoryFetchException
+     */
     public static async GetCurrent(): Promise<User> {
         let user_response: HttpResponse;
         let profile_response: HttpResponse;

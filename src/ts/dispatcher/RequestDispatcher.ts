@@ -17,7 +17,9 @@ export default class RequestDispatcher {
             let executor = await this.GetExecutor(command.Callee);
             await executor.Execute(command);
         } catch(e) {
-            // TODO: Display an alert
+            // TODO: Display it in a nice way
+            alert('There was an error while loading the page.');
+            console.error(e);
         }
     }
 

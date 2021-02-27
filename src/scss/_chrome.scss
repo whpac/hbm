@@ -16,6 +16,16 @@
 
             > * > .component-error-wrapper {grid-column:1 / span 2;}
         }
+        &.login-page {
+            display:grid; grid-template-columns:1fr 280px; grid-template-rows:100%;
+            grid-template-areas:'invitation form';
+
+            .login-form > * {
+                grid-area:form; border-left:1px solid #ccc; padding-left:16px;
+
+                .error {text-align:center;}
+            }
+        }
     }
 }
 

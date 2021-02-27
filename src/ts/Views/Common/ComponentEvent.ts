@@ -1,8 +1,8 @@
-export default class ComponentEvent {
+export default class ComponentEvent<T = any> {
     public readonly Name: string;
-    public readonly Data: any;
+    public readonly Data: T | undefined;
 
-    public constructor(event_name: string, data?: any) {
+    public constructor(event_name: string, data?: T) {
         this.Name = event_name;
         this.Data = data;
     }
